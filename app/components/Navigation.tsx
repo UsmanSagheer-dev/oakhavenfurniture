@@ -8,7 +8,7 @@ type NavItem = {
 function Navigation({ items }: { items: NavItem[] }) {
   return (
     <nav
-      className="flex items-center gap-[clamp(1.3rem,2.4vw,2.8rem)]"
+      className="desktop-nav flex items-center gap-[clamp(1.3rem,2.4vw,2.8rem)]"
       aria-label="Main navigation"
     >
       {items.map((item) => (

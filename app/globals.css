@@ -191,6 +191,24 @@ p {
   display: none;
 }
 
+@media (max-width: 768px) {
+  .menu-button {
+    display: inline-flex;
+  }
+  .site-header nav {
+    display: none;
+  }
+  .desktop-tool {
+    display: none;
+  }
+  .tool-button span {
+    display: none;
+  }
+  .site-header {
+    padding-inline: 1.5rem;
+  }
+}
+
 .mobile-menu,
 .search-overlay {
   position: fixed;
