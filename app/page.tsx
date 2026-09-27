@@ -1,69 +1,233 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState } from "react";
+import NavLink from "./components/NavLink";
+import SectionTitle from "./components/SectionTitle";
+import ProductCard from "./components/ProductCard";
+import TrustStrip from "./components/TrustStrip";
+import Action from "./components/Action";
+import Icon from "./components/Icon";
+import { images, products } from "./data/products";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import SearchOverlay from "./components/SearchOverlay";
+
+export default function HomePage() {
+  const [search, setSearch] = useState(false);
+  const openSearch = () => setSearch(true);
+  const closeSearch = () => setSearch(false);
+  const categories = [
+    ["Bedroom", images.bedroom, "/furniture/bedroom"],
+    ["Living room", images.living, "/furniture/living-room"],
+    ["Dining", images.diningAlt, "/furniture/dining"],
+    ["Tables", images.tableAlt, "/furniture/tables"],
+    ["Seating", images.chair, "/furniture/seating"],
+  ];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+    <>
+      <Header path="/" openSearch={openSearch} />
+      <SearchOverlay open={search} close={closeSearch} />
+      <main>
+        <section className="hero">
+          <img
+            src={images.hero}
+            alt="Warm contemporary bedroom with oak furniture"
+          />
+
+          <div className="hero-shade" />
+
+          <div className="hero-content">
+            <span className="hero-kicker">
+              OAK &amp; HAVEN · 2026 Collection
+            </span>
+
+            <h1>
+              Designed for
+              <br />
+              <em>your space.</em>
+            </h1>
+
+            <p>
+              Thoughtfully chosen furniture that brings comfort, character and
+              timeless style to the way you live.
+            </p>
+
+            <div className="hero-actions">
+              <NavLink href="/furniture" className="action action-light">
+                Explore collection
+              </NavLink>
+
+              <NavLink href="/about" className="action action-ghost">
+                Discover OAK &amp; HAVEN
+              </NavLink>
+            </div>
+          </div>
+
+          <div className="scroll-cue">
+            <span>Scroll to explore</span>
+            <i />
+          </div>
+        </section>
+
+        <section className="editorial-intro content-shell">
+          <div className="intro-copy">
+            <span className="eyebrow1">The OAK &amp; HAVEN edit</span>
+
+            <h2>
+              Designed for the
+              <br />
+              <em>way you live.</em>
+            </h2>
+
+            <p>
+              Discover thoughtfully selected furniture pieces that balance
+              timeless design, comfort and everyday living.
+            </p>
+
+            <NavLink className="text-link" href="/about">
+              Our point of view <Icon name="arrow" />
+            </NavLink>
+          </div>
+
+          <div className="intro-image">
+            <img
+              src={images.intro}
+              alt="Oak dining table in a thoughtfully composed room"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+
+            <span>
+              Thoughtful forms
+              <br />
+              Natural materials
+            </span>
+          </div>
+        </section>
+
+        <section className="collections-section">
+          <div className="content-shell">
+            <SectionTitle
+              eyebrow="Explore by room"
+              title="The Collection"
+              copy="Considered pieces for every part of home."
+            />
+          </div>
+
+          <div className="category-rail">
+            {categories.map(([name, image, href], index) => (
+              <NavLink
+                href={href}
+                className={`category-card category-${index + 1}`}
+                key={name}
+              >
+                <img
+                  src={image}
+                  alt={`${name} furniture collection`}
+                />
+
+                <span>
+                  <small>0{index + 1}</small>
+                  <strong>{name}</strong>
+                  <Icon name="arrow" />
+                </span>
+              </NavLink>
+            ))}
+          </div>
+        </section>
+
+        <section className="products-section content-shell">
+          <div className="section-head-row">
+            <SectionTitle
+              eyebrow="Just in"
+              title="New Arrivals"
+              copy="Recently added pieces, selected for modern interiors."
+            />
+
+            <NavLink href="/furniture?sort=newest" className="text-link">
+              View all new pieces <Icon name="arrow" />
+            </NavLink>
+          </div>
+
+          <div className="product-grid">
+            {products.slice(0, 4).map((product) => (
+              <ProductCard key={product.slug} product={product} />
+            ))}
+          </div>
+        </section>
+
+        <section className="banner">
+          <img
+            src={images.living}
+            alt="Luxury living room with cream furniture"
+          />
+
+          <div className="banner-shade" />
+
+          <div className="banner-content">
+            <span className="eyebrow">A softer way to live</span>
+
+            <h2>
+              The Living
+              <br />
+              <em>Collection</em>
+            </h2>
+
+            <p>Spaces designed to feel like home.</p>
+
+            <NavLink
+              href="/furniture/living-room"
+              className="action action-light"
+            >
+              Explore living
+            </NavLink>
+          </div>
+        </section>
+
+        <TrustStrip />
+
+        <section className="social-section content-shell">
+          <SectionTitle
+            align="center"
+            eyebrow="@oakandHAVEN"
+            title="Follow OAK &amp; HAVEN"
+            copy="Discover more furniture inspiration."
+          />
+
+          <div className="social-grid">
+            {[
+              images.sofaAlt,
+              images.chair,
+              images.bedAlt,
+              images.tableAlt,
+              images.diningAlt,
+              images.sofa,
+            ].map((image, index) => (
+              <a
+                href="#"
+                aria-label={`Social inspiration ${index + 1}`}
+                key={image}
+              >
+                <img src={image} alt="" />
+
+                <span>
+                  <Icon name="instagram" />
+                </span>
+              </a>
+            ))}
+          </div>
+
+          <div className="social-actions">
+            <Action variant="outline">
+              <Icon name="instagram" /> Instagram
+            </Action>
+
+            <Action variant="outline">
+              <Icon name="facebook" /> Facebook
+            </Action>
+          </div>
+        </section>
       </main>
-    </div>
+      <Footer />
+    </>
   );
 }
