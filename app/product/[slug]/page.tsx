@@ -52,21 +52,21 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                   onClick={() => setActiveImage(selectedVariant.image)}
                 >
                   <img src={selectedVariant.image} alt={`${selectedVariant.size} - Main view`} />
-                  <span>{selectedVariant.size}</span>
+                  {/* <span>{selectedVariant.size}</span> */}
                 </button>
                 <button
                   className={activeImage === selectedVariant.altImage ? "active" : ""}
                   onClick={() => setActiveImage(selectedVariant.altImage)}
                 >
                   <img src={selectedVariant.altImage} alt={`${selectedVariant.size} - Alternate view`} />
-                  <span>Alt</span>
+                  {/* <span>Alt</span> */}
                 </button>
                 <button
                   className={activeImage === selectedVariant.thirdImage ? "active" : ""}
                   onClick={() => selectedVariant.thirdImage && setActiveImage(selectedVariant.thirdImage)}
                 >
                   <img src={selectedVariant.thirdImage || selectedVariant.image} alt={`${selectedVariant.size} - Third view`} />
-                  <span>3rd</span>
+                  {/* <span>3rd</span> */}
                 </button>
               </>
             ) : (
