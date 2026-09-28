@@ -4,6 +4,7 @@ import { useState } from "react";
 import Logo from "./Logo";
 import NavLink from "./NavLink";
 import Icon from "./Icon";
+import { createGeneralWhatsAppLink } from "../utils/whatsapp";
 
 function Newsletter() {
   const [subscribed, setSubscribed] = useState(false);
@@ -61,8 +62,8 @@ function Footer() {
     [
       "Help",
       [
-        ["WhatsApp", "https://wa.me/923001234567"],
-        ["Call Us", "tel:+923001234567"],
+        ["WhatsApp", createGeneralWhatsAppLink()],
+        ["Call Us", "tel:+447310613403"],
         ["Delivery Information", "/contact"],
       ],
     ],
