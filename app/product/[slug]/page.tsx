@@ -25,7 +25,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   const message = encodeURIComponent(
     `Assalam o Alaikum, I'm interested in the ${product.name} (${selectedVariant.size}) listed on OAK & HAVEN FURNITURE for ${formatPrice(selectedVariant.price)}. Please share availability and delivery details.`,
   );
-  const whatsapp = `https://wa.me/923001234567?text=${message}`;
+  const whatsapp = `https://wa.me/447310613403?text=${message}`;
   return (
     <>
       <Header path={`/product/${slug}`} openSearch={openSearch} />
@@ -122,7 +122,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             <Action href={whatsapp}>
               <Icon name="whatsapp" /> Order / Inquire on WhatsApp
             </Action>
-            <Action href="tel:+923001234567" variant="outline">
+            <Action href="tel:+447310613403" variant="outline">
               <Icon name="phone" /> Call us
             </Action>
           </div>
@@ -191,7 +191,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
         <a href={whatsapp}>
           <Icon name="whatsapp" /> WhatsApp
         </a>
-        <a href="tel:+923001234567">
+        <a href="tel:+447310613403">
           <Icon name="phone" /> Call
         </a>
       </div>

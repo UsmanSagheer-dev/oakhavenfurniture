@@ -5,6 +5,7 @@ import Logo from "./Logo";
 import NavLink from "./NavLink";
 import Icon from "./Icon";
 import Navigation from "./Navigation";
+import { createGeneralWhatsAppLink } from "../utils/whatsapp";
 
 function Header({
   path,
@@ -54,7 +55,7 @@ function Header({
           <a
             className="tool-button desktop-tool"
             aria-label="WhatsApp"
-            href="https://wa.me/923001234567"
+            href={createGeneralWhatsAppLink()}
           >
             <Icon name="whatsapp" />
           </a>
@@ -100,7 +101,7 @@ function Header({
         </nav>
         <div className="mobile-menu-foot">
           <p>Furniture for beautiful living.</p>
-          <a href="https://wa.me/923001234567">
+          <a href={createGeneralWhatsAppLink()}>
             <Icon name="whatsapp" /> WhatsApp us
           </a>
         </div>
