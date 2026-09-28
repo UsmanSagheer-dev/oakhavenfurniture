@@ -39,12 +39,12 @@ const images = {
   bedEmperor2: "/images/emperorsleighbed2.jpeg",
   bedEmperor3: "/images/emperorsleighbed3.jpeg",
   // Arizona Bed - Size Variants
-  arizonaSingle: "/images/arizonabed_single1.jpeg",
-  arizonaSingle2: "/images/arizonabed_single2.jpeg",
-  arizonaSingle3: "/images/arizonabed_single3.jpeg",
-  arizonaDouble: "/images/arizonabed_double1.jpeg",
-  arizonaDouble2: "/images/arizonabed_double2.jpeg",
-  arizonaDouble3: "/images/arizonabed_double3.jpeg",
+  arizonaSingle: "/images/arizonaSingle1.jpeg",
+  arizonaSingle2: "/images/arizonaSingle2.jpeg",
+  arizonaSingle3: "/images/arizonaSingle3.jpeg",
+  arizonaDouble: "/images/arizonaDouble1.jpeg",
+  arizonaDouble2: "/images/arizonaDouble2.jpeg",
+  arizonaDouble3: "/images/arizonaDouble3.jpeg",
   arizonaKing: "/images/arizonabed_king1.jpeg",
   arizonaKing2: "/images/arizonabed_king2.jpeg",
   arizonaKing3: "/images/arizonabed_king3.jpeg",
@@ -100,7 +100,7 @@ const products: Product[] = [
       },
       {
         size: "Small Double",
-        price: 235,
+        price: 250,
         image: images.bedDouble,
         altImage: images.bedDouble2,
         thirdImage: images.bedDouble3,
@@ -146,11 +146,11 @@ const products: Product[] = [
     slug: "arizona-bed",
     name: "Arizona Bed",
     category: "Bedroom",
-    basePrice: 240,
+    basePrice: 220,
     variants: [
       {
         size: "Single",
-        price: 240,
+        price: 220,
         image: images.arizonaSingle,
         altImage: images.arizonaSingle2,
         thirdImage: images.arizonaSingle3,
@@ -158,7 +158,7 @@ const products: Product[] = [
       },
       {
         size: "Small Double",
-        price: 255,
+        price: 250,
         image: images.arizonaDouble,
         altImage: images.arizonaDouble2,
         thirdImage: images.arizonaDouble3,
@@ -166,7 +166,7 @@ const products: Product[] = [
       },
       {
         size: "Double",
-        price: 270,
+        price: 250,
         image: images.arizonaDouble,
         altImage: images.arizonaDouble2,
         thirdImage: images.arizonaDouble3,
@@ -174,7 +174,7 @@ const products: Product[] = [
       },
       {
         size: "King",
-        price: 300,
+        price: 280,
         image: images.arizonaKing,
         altImage: images.arizonaKing2,
         thirdImage: images.arizonaKing3,
@@ -182,7 +182,7 @@ const products: Product[] = [
       },
       {
         size: "Super King",
-        price: 350,
+        price: 330,
         image: images.arizonaSuperKing,
         altImage: images.arizonaSuperKing2,
         thirdImage: images.arizonaSuperKing3,
