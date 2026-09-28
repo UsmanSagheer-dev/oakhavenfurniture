@@ -10,7 +10,11 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import SearchOverlay from "../../components/SearchOverlay";
 
-export default function CategoryPage({ params }: { params: Promise<{ category: string }> }) {
+export default function CategoryPage({
+  params,
+}: {
+  params: Promise<{ category: string }>;
+}) {
   const { category } = use(params);
   const routeCategory = category.replace("-", " ");
   const [filter, setFilter] = useState(routeCategory || "All");
@@ -29,9 +33,9 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
           );
     return [...selected].sort((a, b) =>
       sort === "low"
-        ? a.price - b.price
+        ? a.basePrice - b.basePrice
         : sort === "high"
-          ? b.price - a.price
+          ? b.basePrice - a.basePrice
           : sort === "newest"
             ? Number(Boolean(b.isNew)) - Number(Boolean(a.isNew))
             : 0,
@@ -44,7 +48,7 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
       : routeCategory === "living room"
         ? images.living
         : routeCategory === "dining"
-          ? images.diningAlt
+          ? images.dining2
           : null;
 
   return (
@@ -52,101 +56,103 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
       <Header path={`/furniture/${category}`} openSearch={openSearch} />
       <SearchOverlay open={search} close={closeSearch} />
       <main className="page-main">
-      {heroImage ? (
-        <section className="category-hero">
-          <img src={heroImage} alt={`${routeCategory} collection`} />
-          <div>
-            <span className="eyebrow1">The collection</span>
-            <h1>{routeCategory}</h1>
-            <p>
-              Considered furniture to bring ease, warmth and character to your
-              space.
-            </p>
-          </div>
-        </section>
-      ) : (
-        <section className="page-title content-shell">
-          <span className="eyebrow">OAK &amp; HAVEN Furniture</span>
-          <h1>{routeCategory}</h1>
-          <p>Explore our collection of thoughtfully selected pieces.</p>
-        </section>
-      )}
-      <section className="catalog content-shell">
-        <div className="catalog-toolbar">
-          <span>Showing {shown.length} products</span>
-          <button className="filter-trigger" onClick={() => setDrawer(true)}>
-            <Icon name="filter" /> Filter
-          </button>
-          <label>
-            Sort by{" "}
-            <select value={sort} onChange={(e) => setSort(e.target.value)}>
-              <option value="featured">Featured</option>
-              <option value="newest">Newest</option>
-              <option value="low">Price: Low to High</option>
-              <option value="high">Price: High to Low</option>
-            </select>
-          </label>
-        </div>
-        <div className="catalog-layout">
-          <aside className={`filters ${drawer ? "is-open" : ""}`}>
-            <div className="filter-mobile-top">
-              <strong>Filter</strong>
-              <button onClick={() => setDrawer(false)}>
-                <Icon name="close" />
-              </button>
+        {heroImage ? (
+          <section className="category-hero">
+            <img src={heroImage} alt={`${routeCategory} collection`} />
+            <div>
+              <span className="eyebrow1">The collection</span>
+              <h1>{routeCategory}</h1>
+              <p>
+                Considered furniture to bring ease, warmth and character to your
+                space.
+              </p>
             </div>
-            <div className="filter-block">
-              <span>Category</span>
-              {[
-                "All",
-                "Bedroom",
-                "Living Room",
-                "Dining",
-                "Tables",
-                "Seating",
-              ].map((item) => (
-                <button
-                  className={
-                    filter.toLowerCase() === item.toLowerCase() ? "active" : ""
-                  }
-                  onClick={() => {
-                    setFilter(item);
-                    setDrawer(false);
-                  }}
-                  key={item}
-                >
+          </section>
+        ) : (
+          <section className="page-title content-shell">
+            <span className="eyebrow">OAK &amp; HAVEN Furniture</span>
+            <h1>{routeCategory}</h1>
+            <p>Explore our collection of thoughtfully selected pieces.</p>
+          </section>
+        )}
+        <section className="catalog content-shell">
+          <div className="catalog-toolbar">
+            <span>Showing {shown.length} products</span>
+            <button className="filter-trigger" onClick={() => setDrawer(true)}>
+              <Icon name="filter" /> Filter
+            </button>
+            <label>
+              Sort by{" "}
+              <select value={sort} onChange={(e) => setSort(e.target.value)}>
+                <option value="featured">Featured</option>
+                <option value="newest">Newest</option>
+                <option value="low">Price: Low to High</option>
+                <option value="high">Price: High to Low</option>
+              </select>
+            </label>
+          </div>
+          <div className="catalog-layout">
+            <aside className={`filters ${drawer ? "is-open" : ""}`}>
+              <div className="filter-mobile-top">
+                <strong>Filter</strong>
+                <button onClick={() => setDrawer(false)}>
+                  <Icon name="close" />
+                </button>
+              </div>
+              <div className="filter-block">
+                <span>Category</span>
+                {[
+                  "All",
+                  "Bedroom",
+                  "Living Room",
+                  "Dining",
+                  "Tables",
+                  "Seating",
+                ].map((item) => (
+                  <button
+                    className={
+                      filter.toLowerCase() === item.toLowerCase()
+                        ? "active"
+                        : ""
+                    }
+                    onClick={() => {
+                      setFilter(item);
+                      setDrawer(false);
+                    }}
+                    key={item}
+                  >
+                    {item}
+                    <small>
+                      {item === "All"
+                        ? products.length
+                        : products.filter((p) => p.category === item).length}
+                    </small>
+                  </button>
+                ))}
+              </div>
+              {["Price", "Availability", "Material", "Color"].map((item) => (
+                <button className="filter-collapsed" key={item}>
                   {item}
-                  <small>
-                    {item === "All"
-                      ? products.length
-                      : products.filter((p) => p.category === item).length}
-                  </small>
+                  <span>+</span>
                 </button>
               ))}
+            </aside>
+            {drawer && (
+              <button
+                className="drawer-backdrop"
+                aria-label="Close filters"
+                onClick={() => setDrawer(false)}
+              />
+            )}
+            <div className="product-grid catalog-grid">
+              {shown.map((product) => (
+                <ProductCard key={product.slug} product={product} />
+              ))}
             </div>
-            {["Price", "Availability", "Material", "Color"].map((item) => (
-              <button className="filter-collapsed" key={item}>
-                {item}
-                <span>+</span>
-              </button>
-            ))}
-          </aside>
-          {drawer && (
-            <button
-              className="drawer-backdrop"
-              aria-label="Close filters"
-              onClick={() => setDrawer(false)}
-            />
-          )}
-          <div className="product-grid catalog-grid">
-            {shown.map((product) => (
-              <ProductCard key={product.slug} product={product} />
-            ))}
           </div>
-        </div>
-      </section>
-    </main>
-    <Footer />
+        </section>
+      </main>
+      <Footer />
     </>
   );
 }

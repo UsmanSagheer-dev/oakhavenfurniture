@@ -18,7 +18,7 @@ export default function AboutPage() {
       <SearchOverlay open={search} close={closeSearch} />
       <main className="page-main">
       <section className="about-hero">
-        <img src={images.sofaAlt} alt="Beautifully curated living room" />
+        <img src={images.sofa2} alt="Beautifully curated living room" />
 
         <div>
           <span className="eyebrow">Our point of view</span>

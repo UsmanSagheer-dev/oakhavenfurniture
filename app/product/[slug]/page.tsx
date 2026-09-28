@@ -15,14 +15,15 @@ import SearchOverlay from "../../components/SearchOverlay";
 export default function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
   const product = products.find((item) => item.slug === slug) || products[0];
-  const [activeImage, setActiveImage] = useState(product.image);
+  const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
+  const [activeImage, setActiveImage] = useState(selectedVariant.image);
   const [viewer, setViewer] = useState(false);
   const [search, setSearch] = useState(false);
   const openSearch = () => setSearch(true);
   const closeSearch = () => setSearch(false);
-  useEffect(() => setActiveImage(product.image), [product]);
+  useEffect(() => setActiveImage(selectedVariant.image), [selectedVariant]);
   const message = encodeURIComponent(
-    `Assalam o Alaikum, I'm interested in the ${product.name} listed on OAK & HAVEN FURNITURE for ${formatPrice(product.price)}. Please share availability and delivery details.`,
+    `Assalam o Alaikum, I'm interested in the ${product.name} (${selectedVariant.size}) listed on OAK & HAVEN FURNITURE for ${formatPrice(selectedVariant.price)}. Please share availability and delivery details.`,
   );
   const whatsapp = `https://wa.me/923001234567?text=${message}`;
   return (
@@ -40,33 +41,82 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
       <section className="product-layout content-shell">
         <div className="gallery">
           <div className="gallery-main" onClick={() => setViewer(true)}>
-            <img src={activeImage} alt={product.name} />
+            <img src={activeImage} alt={product.category} />
             <span>Click to expand</span>
           </div>
           <div className="thumbnails">
-            {[product.image, product.altImage, images.intro].map(
-              (image, index) => (
+            {selectedVariant.thirdImage ? (
+              <>
                 <button
-                  className={activeImage === image ? "active" : ""}
-                  onClick={() => setActiveImage(image)}
-                  key={image}
+                  className={activeImage === selectedVariant.image ? "active" : ""}
+                  onClick={() => setActiveImage(selectedVariant.image)}
                 >
-                  <img src={image} alt={`${product.name} view ${index + 1}`} />
+                  <img src={selectedVariant.image} alt={`${selectedVariant.size} - Main view`} />
+                  <span>{selectedVariant.size}</span>
                 </button>
-              ),
+                <button
+                  className={activeImage === selectedVariant.altImage ? "active" : ""}
+                  onClick={() => setActiveImage(selectedVariant.altImage)}
+                >
+                  <img src={selectedVariant.altImage} alt={`${selectedVariant.size} - Alternate view`} />
+                  <span>Alt</span>
+                </button>
+                <button
+                  className={activeImage === selectedVariant.thirdImage ? "active" : ""}
+                  onClick={() => selectedVariant.thirdImage && setActiveImage(selectedVariant.thirdImage)}
+                >
+                  <img src={selectedVariant.thirdImage || selectedVariant.image} alt={`${selectedVariant.size} - Third view`} />
+                  <span>3rd</span>
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  className={activeImage === selectedVariant.image ? "active" : ""}
+                  onClick={() => setActiveImage(selectedVariant.image)}
+                >
+                  <img src={selectedVariant.image} alt={`${selectedVariant.size} - Main view`} />
+                  <span>{selectedVariant.size}</span>
+                </button>
+                <button
+                  className={activeImage === selectedVariant.altImage ? "active" : ""}
+                  onClick={() => setActiveImage(selectedVariant.altImage)}
+                >
+                  <img src={selectedVariant.altImage} alt={`${selectedVariant.size} - Alternate view`} />
+                  <span>Alt</span>
+                </button>
+              </>
             )}
           </div>
         </div>
         <div className="product-detail">
           <span className="eyebrow">{product.category} Collection</span>
           <h1>{product.name}</h1>
-          <p className="product-price">{formatPrice(product.price)}</p>
+          <p className="product-price">{formatPrice(selectedVariant.price)}</p>
           <div className="availability">
             <span>
               <i /> Available
             </span>
             <span>Free home delivery*</span>
           </div>
+          {product.variants.length > 1 && (
+            <div className="size-selector">
+              <label>Select Size:</label>
+              <div className="size-options">
+                {product.variants.map((variant) => (
+                  <button
+                    key={variant.size}
+                    className={selectedVariant.size === variant.size ? "active" : ""}
+                    onClick={() => setSelectedVariant(variant)}
+                  >
+                    <img src={variant.image} alt={variant.size} />
+                    <span>{variant.size}</span>
+                    <small>{formatPrice(variant.price)}</small>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           <p className="product-description">{product.description}</p>
           <div className="detail-actions">
             <Action href={whatsapp}>
@@ -104,7 +154,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
           </p>
         </div>
         <dl>
-          {Object.entries(product.specs).map(([key, value]) => (
+          {Object.entries(selectedVariant.specs || product.specs || {}).map(([key, value]) => (
             <div key={key}>
               <dt>{key}</dt>
               <dd>{value}</dd>
@@ -150,7 +200,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
           <button onClick={() => setViewer(false)} aria-label="Close image">
             <Icon name="close" />
           </button>
-          <img src={activeImage} alt={product.name} />
+          <img src={activeImage} alt={product.category} />
         </div>
       )}
     </main>

@@ -19,8 +19,8 @@ export default function HomePage() {
   const categories = [
     ["Bedroom", images.bedroom, "/furniture/bedroom"],
     ["Living room", images.living, "/furniture/living-room"],
-    ["Dining", images.diningAlt, "/furniture/dining"],
-    ["Tables", images.tableAlt, "/furniture/tables"],
+    ["Dining", images.dining2, "/furniture/dining"],
+    ["Tables", images.table2, "/furniture/tables"],
     ["Seating", images.chair, "/furniture/seating"],
   ];
 
@@ -195,11 +195,11 @@ export default function HomePage() {
 
           <div className="social-grid">
             {[
-              images.sofaAlt,
+              images.sofa2,
               images.chair,
-              images.bedAlt,
-              images.tableAlt,
-              images.diningAlt,
+              images.bedSingle,
+              images.table2,
+              images.dining2,
               images.sofa,
             ].map((image, index) => (
               <a
