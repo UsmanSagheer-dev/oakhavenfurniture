@@ -3,12 +3,11 @@
 import { useState, useMemo } from "react";
 import { products } from "../data/products";
 import ProductCard from "../components/ProductCard";
-import SectionTitle from "../components/SectionTitle";
-import NavLink from "../components/NavLink";
 import Icon from "../components/Icon";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import SearchOverlay from "../components/SearchOverlay";
+import FurnitureHero from "../components/FurnitureHero";
 
 export default function FurniturePage() {
   const [filter, setFilter] = useState("All");
@@ -41,11 +40,9 @@ export default function FurniturePage() {
       <Header path="/furniture" openSearch={openSearch} />
       <SearchOverlay open={search} close={closeSearch} />
       <main className="page-main">
-      <section className="page-title content-shell">
-        <span className="eyebrow">OAK &amp; HAVEN Furniture</span>
-        <h1>All Furniture</h1>
-        <p>Explore our collection of thoughtfully selected pieces.</p>
-      </section>
+      <div className="content-shell">
+        <FurnitureHero />
+      </div>
       <section className="catalog content-shell">
         <div className="catalog-toolbar">
           <span>Showing {shown.length} products</span>
