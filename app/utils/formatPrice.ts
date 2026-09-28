@@ -1,1 +1,1 @@
-export const formatPrice = (price: number) => `Rs. ${price.toLocaleString("en-PK")}`;
+export const formatPrice = (price: number) => `£${price.toLocaleString("en-GB")}`;

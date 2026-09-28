@@ -4,7 +4,6 @@ type NavItem = {
   href: string;
   label: string;
 };
-
 function Navigation({ items }: { items: NavItem[] }) {
   return (
     <nav

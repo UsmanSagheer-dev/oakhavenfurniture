@@ -27,9 +27,9 @@ export default function FurniturePage() {
           );
     return [...selected].sort((a, b) =>
       sort === "low"
-        ? a.price - b.price
+        ? a.basePrice - b.basePrice
         : sort === "high"
-          ? b.price - a.price
+          ? b.basePrice - a.basePrice
           : sort === "newest"
             ? Number(Boolean(b.isNew)) - Number(Boolean(a.isNew))
             : 0,
