@@ -48,7 +48,7 @@ function ProductCard({ product }: { product: Product }) {
         </p>
         <NavLink
           href={`/product/${product.slug}`}
-          className="hidden md:inline-flex items-center gap-2 mt-4 pb-1 border-b border-[rgba(33,26,22,0.15)] text-xs tracking-[0.1em] uppercase transition-all duration-300 hover:gap-3"
+          className="hidden md:inline-flex items-center gap-2 mt-4 pb-1 border-b border-[rgba(33,26,22,0.15)] text-xs tracking-widest uppercase transition-all duration-300 hover:gap-3"
         >
           View product <Icon name="arrow" className="w-4" />
         </NavLink>
