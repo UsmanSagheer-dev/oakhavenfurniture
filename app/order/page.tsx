@@ -12,6 +12,8 @@ import Footer from "../components/Footer";
 import SearchOverlay from "../components/SearchOverlay";
 import CartDrawer from "../components/CartDrawer";
 import Toast from "../components/Toast";
+import Input from "../components/Input";
+import Textarea from "../components/Textarea";
 import { formatPrice } from "../utils/formatPrice";
 
 export default function OrderPage() {
@@ -22,7 +24,10 @@ export default function OrderPage() {
   const openSearch = () => setSearch(true);
   const closeSearch = () => setSearch(false);
 
-  const subtotal = cart.reduce((sum, item) => sum + item.size.price * item.quantity, 0);
+  const subtotal = cart.reduce(
+    (sum, item) => sum + item.size.price * item.quantity,
+    0,
+  );
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -44,7 +49,8 @@ export default function OrderPage() {
     if (!form.name.trim()) errs.name = "Please enter your full name.";
     if (!form.phone.trim()) errs.phone = "Please enter your phone number.";
     if (!form.city.trim()) errs.city = "Please enter your city.";
-    if (!form.address.trim()) errs.address = "Please enter your delivery address.";
+    if (!form.address.trim())
+      errs.address = "Please enter your delivery address.";
     return errs;
   };
 
@@ -61,20 +67,24 @@ export default function OrderPage() {
       form.notes ? `Notes: ${form.notes}` : "",
       "",
       "Order:",
-      ...cart.map((item, i) => [
-        `${i + 1}. ${item.product.name}`,
-        `   Size: ${item.size.label}`,
-        `   Color: ${item.color.name}`,
-        `   Quantity: ${item.quantity}`,
-        `   Price: ${formatPrice(item.size.price * item.quantity)}`,
-      ].join("\n")),
+      ...cart.map((item, i) =>
+        [
+          `${i + 1}. ${item.product.name}`,
+          `   Size: ${item.size.label}`,
+          `   Color: ${item.color.name}`,
+          `   Quantity: ${item.quantity}`,
+          `   Price: ${formatPrice(item.size.price * item.quantity)}`,
+        ].join("\n"),
+      ),
       "",
       `Subtotal: ${formatPrice(subtotal)}`,
       "Delivery: Free",
       `Total: ${formatPrice(subtotal)}`,
       "",
       "Please confirm availability and delivery.",
-    ].filter((l) => l !== undefined && l !== null).join("\n");
+    ]
+      .filter((l) => l !== undefined && l !== null)
+      .join("\n");
     return encodeURIComponent(lines);
   };
 
@@ -98,13 +108,20 @@ export default function OrderPage() {
 
   useEffect(() => {
     document.body.style.overflow = search || cartOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [search, cartOpen]);
 
   if (cart.length === 0 && !orderSuccess) {
     return (
       <>
-        <Header path="/order" openSearch={openSearch} cartCount={cartCount} openCart={() => setCartOpen(true)} />
+        <Header
+          path="/order"
+          openSearch={openSearch}
+          cartCount={cartCount}
+          openCart={() => setCartOpen(true)}
+        />
         <SearchOverlay open={search} close={closeSearch} />
         <main className="page-main">
           <div className="content-shell px-8 py-24">
@@ -125,7 +142,12 @@ export default function OrderPage() {
   if (orderSuccess) {
     return (
       <>
-        <Header path="/order" openSearch={openSearch} cartCount={cartCount} openCart={() => setCartOpen(true)} />
+        <Header
+          path="/order"
+          openSearch={openSearch}
+          cartCount={cartCount}
+          openCart={() => setCartOpen(true)}
+        />
         <SearchOverlay open={search} close={closeSearch} />
         <main className="page-main">
           <div className="flex flex-col items-center text-center p-24 content-shell">
@@ -135,8 +157,9 @@ export default function OrderPage() {
             <span className="eyebrow">Thank You</span>
             <h1>Order Request Sent</h1>
             <p>
-              Thank you for choosing OAK &amp; HAVEN. Your order details have been sent to our team. We will contact you
-              shortly to confirm availability and delivery.
+              Thank you for choosing OAK &amp; HAVEN. Your order details have
+              been sent to our team. We will contact you shortly to confirm
+              availability and delivery.
             </p>
             <div className="flex flex-col gap-2 my-8 text-left">
               <div className="flex items-center gap-2 text-[0.75rem]">
@@ -153,7 +176,13 @@ export default function OrderPage() {
               </div>
             </div>
             <div className="grid gap-2 my-8">
-              <button className="action action-dark" onClick={() => { setOrderSuccess(false); navigate("/furniture"); }}>
+              <button
+                className="action action-dark"
+                onClick={() => {
+                  setOrderSuccess(false);
+                  navigate("/furniture");
+                }}
+              >
                 Continue Shopping
               </button>
               <NavLink href="/" className="action action-outline">
@@ -161,7 +190,8 @@ export default function OrderPage() {
               </NavLink>
             </div>
             <p className="text-[#a69a8d] text-[0.7rem]">
-              Need help? <a href="https://wa.me/447310613403" className="underline">
+              Need help?{" "}
+              <a href="https://wa.me/447310613403" className="underline">
                 Contact us on WhatsApp
               </a>
             </p>
@@ -174,7 +204,12 @@ export default function OrderPage() {
 
   return (
     <>
-      <Header path="/order" openSearch={openSearch} cartCount={cartCount} openCart={() => setCartOpen(true)} />
+      <Header
+        path="/order"
+        openSearch={openSearch}
+        cartCount={cartCount}
+        openCart={() => setCartOpen(true)}
+      />
       <SearchOverlay open={search} close={closeSearch} />
       <CartDrawer
         open={cartOpen}
@@ -185,101 +220,95 @@ export default function OrderPage() {
         onViewCart={() => navigate("/cart")}
         onOrder={() => navigate("/order")}
       />
-      {toast.visible && <Toast message={toast.msg} onView={() => navigate("/cart")} onClose={hideToast} visible={toast.visible} />}
+      {toast.visible && (
+        <Toast
+          message={toast.msg}
+          onView={() => navigate("/cart")}
+          onClose={hideToast}
+          visible={toast.visible}
+        />
+      )}
       <main className="page-main">
         <section className="content-shell">
-          <div className="grid grid-cols-[1fr_0.9fr] gap-12 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_0.9fr] gap-12 items-start">
             <div>
               <div className="mb-8">
                 <span className="eyebrow">Almost there</span>
                 <h1>Complete Your Order</h1>
                 <p>
-                  Enter your details and send your order directly to OAK &amp; HAVEN. We will confirm availability and
-                  delivery promptly.
+                  Enter your details and send your order directly to OAK &amp;
+                  HAVEN. We will confirm availability and delivery promptly.
                 </p>
               </div>
-              <form className="flex flex-col gap-6" onSubmit={handleSubmit} noValidate>
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="ord-name" className="text-[0.6rem] tracking-[0.08em] uppercase font-semibold">Full Name *</label>
-                    <input
-                      id="ord-name"
-                      placeholder="Your full name"
-                      value={form.name}
-                      onChange={(e) => update("name", e.target.value)}
-                      className={`p-2 border-0 border-b border-[rgba(33,26,22,0.15)] outline-0 bg-transparent text-[0.8rem] ${fieldErrors.name ? "border-b-[#b91c1c]" : ""}`}
-                    />
-                    {fieldErrors.name && <span className="text-[#b91c1c] text-[0.6rem]">{fieldErrors.name}</span>}
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="ord-phone" className="text-[0.6rem] tracking-[0.08em] uppercase font-semibold">Phone Number *</label>
-                    <input
-                      id="ord-phone"
-                      type="tel"
-                      placeholder="+92 300 000 0000"
-                      value={form.phone}
-                      onChange={(e) => update("phone", e.target.value)}
-                      className={`p-2 border-0 border-b border-[rgba(33,26,22,0.15)] outline-0 bg-transparent text-[0.8rem] ${fieldErrors.phone ? "border-b-[#b91c1c]" : ""}`}
-                    />
-                    {fieldErrors.phone && <span className="text-[#b91c1c] text-[0.6rem]">{fieldErrors.phone}</span>}
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="ord-wa" className="text-[0.6rem] tracking-[0.08em] uppercase font-semibold">WhatsApp Number</label>
-                    <input
-                      id="ord-wa"
-                      type="tel"
-                      placeholder="If different from phone"
-                      value={form.whatsapp}
-                      onChange={(e) => update("whatsapp", e.target.value)}
-                      className="p-2 border-0 border-b border-[rgba(33,26,22,0.15)] outline-0 bg-transparent text-[0.8rem]"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="ord-city" className="text-[0.6rem] tracking-[0.08em] uppercase font-semibold">City *</label>
-                    <input
-                      id="ord-city"
-                      placeholder="e.g. Lahore, Karachi"
-                      value={form.city}
-                      onChange={(e) => update("city", e.target.value)}
-                      className={`p-2 border-0 border-b border-[rgba(33,26,22,0.15)] outline-0 bg-transparent text-[0.8rem] ${fieldErrors.city ? "border-b-[#b91c1c]" : ""}`}
-                    />
-                    {fieldErrors.city && <span className="text-[#b91c1c] text-[0.6rem]">{fieldErrors.city}</span>}
-                  </div>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="ord-address" className="text-[0.6rem] tracking-[0.08em] uppercase font-semibold">Delivery Address *</label>
-                  <textarea
-                    id="ord-address"
-                    placeholder="House no., street, area, city"
-                    value={form.address}
-                    onChange={(e) => update("address", e.target.value)}
-                    className={`min-h-16 p-2 border-0 border-b border-[rgba(33,26,22,0.15)] outline-0 bg-transparent text-[0.8rem] resize-vertical ${fieldErrors.address ? "border-b-[#b91c1c]" : ""}`}
+              <form
+                className="flex flex-col gap-6"
+                onSubmit={handleSubmit}
+                noValidate
+              >
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <Input
+                    id="ord-name"
+                    label="Full Name"
+                    placeholder="Your full name"
+                    value={form.name}
+                    onChange={(e) => update("name", e.target.value)}
+                    error={fieldErrors.name}
+                    required
                   />
-                  {fieldErrors.address && <span className="text-[#b91c1c] text-[0.6rem]">{fieldErrors.address}</span>}
+                  <Input
+                    id="ord-phone"
+                    type="tel"
+                    label="Phone Number"
+                    placeholder="+44 0000 00000 0"
+                    value={form.phone}
+                    onChange={(e) => update("phone", e.target.value)}
+                    error={fieldErrors.phone}
+                    required
+                  />
                 </div>
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="ord-time" className="text-[0.6rem] tracking-[0.08em] uppercase font-semibold">Preferred Delivery Time</label>
-                    <input
-                      id="ord-time"
-                      placeholder="e.g. Weekday mornings"
-                      value={form.deliveryTime}
-                      onChange={(e) => update("deliveryTime", e.target.value)}
-                      className="p-2 border-0 border-b border-[rgba(33,26,22,0.15)] outline-0 bg-transparent text-[0.8rem]"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="ord-notes" className="text-[0.6rem] tracking-[0.08em] uppercase font-semibold">Additional Notes</label>
-                    <input
-                      id="ord-notes"
-                      placeholder="Anything else we should know?"
-                      value={form.notes}
-                      onChange={(e) => update("notes", e.target.value)}
-                      className="p-2 border-0 border-b border-[rgba(33,26,22,0.15)] outline-0 bg-transparent text-[0.8rem]"
-                    />
-                  </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <Input
+                    id="ord-wa"
+                    type="tel"
+                    label="WhatsApp Number"
+                    placeholder="If different from phone"
+                    value={form.whatsapp}
+                    onChange={(e) => update("whatsapp", e.target.value)}
+                  />
+                  <Input
+                    id="ord-city"
+                    label="City"
+                    placeholder="e.g. London, Manchester"
+                    value={form.city}
+                    onChange={(e) => update("city", e.target.value)}
+                    error={fieldErrors.city}
+                    required
+                  />
+                </div>
+                <Textarea
+                  id="ord-address"
+                  label="Delivery Address"
+                  placeholder="House no., street, area, city"
+                  value={form.address}
+                  onChange={(e) => update("address", e.target.value)}
+                  error={fieldErrors.address}
+                  required
+                />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <Input
+                    id="ord-time"
+                    label="Preferred Delivery Time"
+                    placeholder="e.g. Weekday mornings"
+                    value={form.deliveryTime}
+                    onChange={(e) => update("deliveryTime", e.target.value)}
+                  />
+                  <Input
+                    id="ord-notes"
+                    label="Additional Notes"
+                    placeholder="Anything else we should know?"
+                    value={form.notes}
+                    onChange={(e) => update("notes", e.target.value)}
+                  />
                 </div>
                 <div className="grid gap-2 mt-4">
                   <button type="submit" className="action action-dark">
@@ -291,19 +320,33 @@ export default function OrderPage() {
                 </div>
               </form>
             </div>
-            <div className="p-6 bg-[#efe8de] sticky top-32">
-              <h2 className="m-0 mb-4 font-serif text-[1.3rem] font-medium">Order Summary</h2>
+            <div className="p-6 bg-[#efe8de] sticky top-32 lg:sticky lg:top-32">
+              <h2 className="m-0 mb-4 font-serif text-[1.3rem] font-medium">
+                Order Summary
+              </h2>
               {cart.map((item) => (
-                <div className="grid grid-cols-[4rem_1fr] gap-4 py-3 border-b border-[rgba(33,26,22,0.15)]" key={item.id}>
-                  <div className="aspect-square overflow-hidden bg-white">
-                    <img src={item.color.image || item.product.variants[0].image} alt={item.product.name} className="w-full h-full object-cover" />
+                <div
+                  className="grid grid-cols-[4rem_1fr] gap-4 py-3 border-b border-[rgba(33,26,22,0.15)]"
+                  key={item.id}
+                >
+                  <div className="aspect-square overflow-hidden bg-white rounded-lg">
+                    <img
+                      src={item.color.image || item.product.variants[0].image}
+                      alt={item.product.name}
+                      className="w-full h-full object-cover rounded-lg"
+                    />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <span className="font-serif text-[0.85rem] font-medium">{item.product.name}</span>
-                    <span className="text-[0.6rem] text-[#a69a8d]">
-                      {item.size.label} · {item.color.name} · Qty {item.quantity}
+                    <span className="font-serif text-[0.85rem] font-medium">
+                      {item.product.name}
                     </span>
-                    <span className="text-[0.75rem] font-semibold">{formatPrice(item.size.price * item.quantity)}</span>
+                    <span className="text-[0.6rem] text-[#a69a8d]">
+                      {item.size.label} · {item.color.name} · Qty{" "}
+                      {item.quantity}
+                    </span>
+                    <span className="text-[0.75rem] font-semibold">
+                      {formatPrice(item.size.price * item.quantity)}
+                    </span>
                   </div>
                 </div>
               ))}

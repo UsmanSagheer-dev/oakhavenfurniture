@@ -8,6 +8,8 @@ import Footer from "../components/Footer";
 import SearchOverlay from "../components/SearchOverlay";
 import CartDrawer from "../components/CartDrawer";
 import Toast from "../components/Toast";
+import Input from "../components/Input";
+import Textarea from "../components/Textarea";
 import { useCart } from "../context/CartContext";
 
 export default function ContactPage() {
@@ -131,25 +133,26 @@ export default function ContactPage() {
             </div>
           ) : (
             <form onSubmit={submit}>
-              <label>
-                Your name
-                <input required placeholder="Enter your name" />
-              </label>
-              <label>
-                Phone number
-                <input required placeholder="+44" />
-              </label>
-              <label>
-                Email address
-                <input type="email" placeholder="you@example.com" />
-              </label>
-              <label>
-                How can we help?
-                <textarea
-                  required
-                  placeholder="Tell us about the piece you're interested in"
-                />
-              </label>
+              <Input
+                label="Your name"
+                placeholder="Enter your name"
+                required
+              />
+              <Input
+                label="Phone number"
+                placeholder="+44"
+                required
+              />
+              <Input
+                label="Email address"
+                type="email"
+                placeholder="you@example.com"
+              />
+              <Textarea
+                label="How can we help?"
+                placeholder="Tell us about the piece you're interested in"
+                required
+              />
               <Action>
                 Send enquiry <Icon name="arrow" />
               </Action>

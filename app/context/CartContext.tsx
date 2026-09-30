@@ -19,7 +19,10 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [toast, setToast] = useState<{ msg: string; visible: boolean }>({ msg: "", visible: false });
+  const [toast, setToast] = useState<{ msg: string; visible: boolean }>({
+    msg: "",
+    visible: false,
+  });
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const cartCount = cart.reduce((sum, i) => sum + i.quantity, 0);
@@ -27,22 +30,38 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const addToCart = (item: CartItem) => {
     setCart((prev) => {
       const existing = prev.find((i) => i.id === item.id);
-      if (existing) return prev.map((i) => (i.id === item.id ? { ...i, quantity: i.quantity + item.quantity } : i));
+      if (existing)
+        return prev.map((i) =>
+          i.id === item.id ? { ...i, quantity: i.quantity + item.quantity } : i,
+        );
       return [...prev, item];
     });
     if (toastTimer.current) clearTimeout(toastTimer.current);
-    setToast({ msg: `${item.product.name} added to your cart.`, visible: true });
-    toastTimer.current = setTimeout(() => setToast((t) => ({ ...t, visible: false })), 4000);
+    setToast({
+      msg: `${item.product.name} added to your cart.`,
+      visible: true,
+    });
+    toastTimer.current = setTimeout(
+      () => setToast((t) => ({ ...t, visible: false })),
+      4000,
+    );
   };
 
-  const updateQty = (id: string, qty: number) => setCart((prev) => prev.map((i) => (i.id === id ? { ...i, quantity: qty } : i)));
-  const removeItem = (id: string) => setCart((prev) => prev.filter((i) => i.id !== id));
+  const updateQty = (id: string, qty: number) =>
+    setCart((prev) =>
+      prev.map((i) => (i.id === id ? { ...i, quantity: qty } : i)),
+    );
+  const removeItem = (id: string) =>
+    setCart((prev) => prev.filter((i) => i.id !== id));
   const clearCart = () => setCart([]);
 
   const showToast = (msg: string) => {
     if (toastTimer.current) clearTimeout(toastTimer.current);
     setToast({ msg, visible: true });
-    toastTimer.current = setTimeout(() => setToast((t) => ({ ...t, visible: false })), 4000);
+    toastTimer.current = setTimeout(
+      () => setToast((t) => ({ ...t, visible: false })),
+      4000,
+    );
   };
 
   const hideToast = () => setToast((t) => ({ ...t, visible: false }));
