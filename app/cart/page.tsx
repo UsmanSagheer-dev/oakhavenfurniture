@@ -62,7 +62,7 @@ export default function CartPage() {
               Explore Furniture
             </NavLink>
           </div>
-          <section className="related content-shell" style={{ paddingTop: 0 }}>
+          <section className="related content-shell pt-0">
             <SectionTitle eyebrow="Start here" title="You May Also Like" />
             <div className="product-grid">
               {products.slice(0, 4).map((p) => (
@@ -110,24 +110,17 @@ export default function CartPage() {
                     <div className="cart-item-variants">
                       <span>Size: {item.size.label}</span>
                       <span>·</span>
-                      <span style={{ display: "flex", alignItems: "center", gap: ".4rem" }}>
+                      <span className="flex items-center gap-1">
                         <span
-                          className="cart-swatch"
-                          style={{
-                            width: ".8rem",
-                            height: ".8rem",
-                            borderRadius: "50%",
-                            background: item.color.hex,
-                            display: "inline-block",
-                            border: "1px solid rgba(0,0,0,.1)",
-                          }}
+                          className="cart-swatch w-2 h-2 rounded-full inline-block border border-black/10"
+                          style={{ background: item.color.hex }}
                         />
                         {item.color.name}
                       </span>
                     </div>
                     <div className="cart-item-bottom">
                       <QtyControl qty={item.quantity} onChange={(n) => updateQty(item.id, n)} />
-                      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: ".4rem" }}>
+                      <div className="flex flex-col items-end gap-1">
                         <span className="cart-item-price">{formatPrice(item.size.price * item.quantity)}</span>
                         <button className="cart-item-remove" onClick={() => removeItem(item.id)}>
                           Remove
@@ -142,16 +135,16 @@ export default function CartPage() {
               <h2>Order Summary</h2>
               <div className="summary-rows">
                 {cart.map((item) => (
-                  <div className="summary-row" key={item.id} style={{ fontSize: ".68rem" }}>
-                    <span style={{ color: "var(--espresso)" }}>
-                      {item.product.name} <span style={{ color: "var(--taupe)" }}>× {item.quantity}</span>
+                  <div className="summary-row text-[0.68rem]" key={item.id}>
+                    <span className="text-[#211a16]">
+                      {item.product.name} <span className="text-[#a69a8d]">× {item.quantity}</span>
                     </span>
                     <span>{formatPrice(item.size.price * item.quantity)}</span>
                   </div>
                 ))}
                 <div className="summary-row">
                   <span>Delivery</span>
-                  <span style={{ color: "#647458" }}>Free</span>
+                  <span className="text-[#647458]">Free</span>
                 </div>
                 <div className="summary-row total">
                   <span>Total</span>
@@ -169,7 +162,7 @@ export default function CartPage() {
             </div>
           </div>
 
-          <section className="related" style={{ paddingBottom: "2rem" }}>
+          <section className="related pb-8">
             <SectionTitle eyebrow="Complete your space" title="You May Also Like" />
             <div className="product-grid">
               {products

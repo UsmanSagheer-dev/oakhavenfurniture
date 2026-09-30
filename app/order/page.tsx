@@ -107,12 +107,12 @@ export default function OrderPage() {
         <Header path="/order" openSearch={openSearch} cartCount={cartCount} openCart={() => setCartOpen(true)} />
         <SearchOverlay open={search} close={closeSearch} />
         <main className="page-main">
-          <div className="empty-cart content-shell" style={{ padding: "6rem 2rem" }}>
-            <h2 style={{ fontFamily: "var(--serif)", fontSize: "2.5rem", fontWeight: 400, marginBottom: "1rem" }}>
+          <div className="empty-cart content-shell px-8 py-24">
+            <h2 className="font-serif text-[2.5rem] font-normal mb-4">
               Your cart is empty
             </h2>
             <p>Add some pieces to your cart before placing an order.</p>
-            <NavLink href="/furniture" className="action action-dark" style={{ marginTop: "1.5rem" }}>
+            <NavLink href="/furniture" className="action action-dark mt-6">
               Explore Furniture
             </NavLink>
           </div>
@@ -161,7 +161,7 @@ export default function OrderPage() {
               </NavLink>
             </div>
             <p className="order-success-note">
-              Need help? <a href="https://wa.me/447310613403" style={{ textDecoration: "underline" }}>
+              Need help? <a href="https://wa.me/447310613403" className="underline">
                 Contact us on WhatsApp
               </a>
             </p>
@@ -304,14 +304,14 @@ export default function OrderPage() {
                   </div>
                 </div>
               ))}
-              <div className="summary-rows" style={{ marginTop: ".5rem" }}>
+              <div className="summary-rows mt-2">
                 <div className="summary-row">
                   <span>Subtotal</span>
                   <span>{formatPrice(subtotal)}</span>
                 </div>
                 <div className="summary-row">
                   <span>Delivery</span>
-                  <span style={{ color: "#647458" }}>Free</span>
+                  <span className="text-[#647458]">Free</span>
                 </div>
                 <div className="summary-row total">
                   <span>Total</span>

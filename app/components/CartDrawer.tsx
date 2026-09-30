@@ -44,7 +44,7 @@ function CartDrawer({
               <Icon name="bag" />
               <p>Your cart is empty</p>
               <span>Browse our collection to find your perfect piece.</span>
-              <NavLink href="/furniture" onClick={onClose} className="action action-dark" style={{ marginTop: "1rem" }}>
+              <NavLink href="/furniture" onClick={onClose} className="action action-dark mt-4">
                 Explore Furniture
               </NavLink>
             </div>
@@ -80,8 +80,7 @@ function CartDrawer({
               <strong>{formatPrice(subtotal)}</strong>
             </div>
             <div
-              className="drawer-subtotal"
-              style={{ fontSize: ".65rem", color: "var(--taupe)", marginTop: "-.5rem", marginBottom: "1rem" }}
+              className="drawer-subtotal text-[0.65rem] text-[#a69a8d] -mt-2 mb-4"
             >
               <span>Delivery</span>
               <span>Free</span>

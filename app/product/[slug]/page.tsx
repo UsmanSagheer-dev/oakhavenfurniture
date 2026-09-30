@@ -259,7 +259,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
           )}
 
           <p className="help-note">
-            Have a question? <a href={whatsapp} style={{ textDecoration: "underline" }}>Message us on WhatsApp.</a>
+            Have a question? <a href={whatsapp} className="underline">Message us on WhatsApp.</a>
           </p>
 
           <div className="detail-actions">
@@ -333,10 +333,10 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
       </section>
       <div className="sticky-mobile-actions">
         {!added ? <>
-          <button className="action action-dark" onClick={handleAddToCart} style={{ border: "0", flex: "1.7" }}>
+          <button className="action action-dark border-0 flex-[1.7]" onClick={handleAddToCart}>
             <Icon name="bag" /> Add to Cart
           </button>
-          <a href={whatsapp} style={{ flex: "1", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid var(--espresso)", fontSize: ".63rem", fontWeight: 600, letterSpacing: ".08em", textTransform: "uppercase", gap: ".4rem" }}>
+          <a href={whatsapp} className="flex-1 flex items-center justify-center border border-[#211a16] text-[0.63rem] font-semibold tracking-[0.08em] uppercase gap-1">
             <Icon name="whatsapp" /> WhatsApp
           </a>
         </> : <>
