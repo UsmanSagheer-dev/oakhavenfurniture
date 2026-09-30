@@ -10,9 +10,13 @@ import { createGeneralWhatsAppLink } from "../utils/whatsapp";
 function Header({
   path,
   openSearch,
+  cartCount,
+  openCart,
 }: {
   path: string;
   openSearch: () => void;
+  cartCount: number;
+  openCart: () => void;
 }) {
   const [scrolled, setScrolled] = useState(false);
   const [menu, setMenu] = useState(false);
@@ -59,6 +63,14 @@ function Header({
           >
             <Icon name="whatsapp" />
           </a>
+          <button
+            className="tool-button cart-icon-wrap"
+            aria-label="View cart"
+            onClick={openCart}
+          >
+            <Icon name="bag" />
+            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+          </button>
           <button
             className="tool-button menu-button"
             aria-label="Open menu"

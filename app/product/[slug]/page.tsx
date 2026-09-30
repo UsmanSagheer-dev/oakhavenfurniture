@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, use } from "react";
-import { products, images } from "../../data/products";
+import { products, images, productColors, cartItemId, Product, SizeOption, ColorOption, CartItem } from "../../data/products";
 import NavLink from "../../components/NavLink";
 import Action from "../../components/Action";
 import Icon from "../../components/Icon";
@@ -11,6 +11,9 @@ import { formatPrice } from "../../utils/formatPrice";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import SearchOverlay from "../../components/SearchOverlay";
+import CartDrawer from "../../components/CartDrawer";
+import Toast from "../../components/Toast";
+import { useCart } from "../../context/CartContext";
 
 export default function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
@@ -19,17 +22,82 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   const [activeImage, setActiveImage] = useState(selectedVariant.image);
   const [viewer, setViewer] = useState(false);
   const [search, setSearch] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [qty, setQty] = useState(1);
+  const [added, setAdded] = useState(false);
   const openSearch = () => setSearch(true);
   const closeSearch = () => setSearch(false);
-  useEffect(() => setActiveImage(selectedVariant.image), [selectedVariant]);
+
+  const { cart, cartCount, addToCart, updateQty, removeItem, toast, hideToast } = useCart();
+
+  const colors: ColorOption[] = productColors[product.slug] || [{ name: "Natural Oak", hex: "#C4A882", image: product.variants[0].image }];
+  const [selectedColor, setSelectedColor] = useState<ColorOption | null>(null);
+  const [errors, setErrors] = useState<string[]>([]);
+
+  useEffect(() => {
+    setActiveImage(selectedVariant.image);
+    setSelectedColor(null);
+    setQty(1);
+    setAdded(false);
+    setErrors([]);
+  }, [product, selectedVariant]);
+
+  const unitPrice = selectedVariant.price;
+  const subtotal = unitPrice * qty;
+
+  const handleColorSelect = (color: ColorOption) => {
+    setSelectedColor(color);
+    if (color.image) setActiveImage(color.image);
+  };
+
+  const handleAddToCart = () => {
+    const errs: string[] = [];
+    if (!selectedColor) errs.push("color");
+    if (errs.length) { setErrors(errs); return; }
+    setErrors([]);
+    const item: CartItem = {
+      id: cartItemId(product.slug, selectedVariant.size, selectedColor!.name),
+      product,
+      size: { label: selectedVariant.size, price: selectedVariant.price },
+      color: selectedColor!,
+      quantity: qty,
+    };
+    addToCart(item);
+    setAdded(true);
+  };
+
+  const navigate = (href: string) => {
+    window.history.pushState({}, "", href);
+    window.dispatchEvent(new PopStateEvent("popstate"));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    document.body.style.overflow = search || cartOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [search, cartOpen]);
+
   const message = encodeURIComponent(
-    `Assalam o Alaikum, I'm interested in the ${product.name} (${selectedVariant.size}) listed on OAK & HAVEN FURNITURE for ${formatPrice(selectedVariant.price)}. Please share availability and delivery details.`,
+    selectedColor
+      ? `Assalam o Alaikum, I'm interested in the ${product.name} (${selectedVariant.size}, ${selectedColor.name}) from OAK & HAVEN FURNITURE for ${formatPrice(unitPrice)}. Please share availability and delivery details.`
+      : `Assalam o Alaikum, I'm interested in the ${product.name} (${selectedVariant.size}) listed on OAK & HAVEN FURNITURE for ${formatPrice(selectedVariant.price)}. Please share availability and delivery details.`
   );
   const whatsapp = `https://wa.me/447310613403?text=${message}`;
+
   return (
     <>
-      <Header path={`/product/${slug}`} openSearch={openSearch} />
+      <Header path={`/product/${slug}`} openSearch={openSearch} cartCount={cartCount} openCart={() => setCartOpen(true)} />
       <SearchOverlay open={search} close={closeSearch} />
+      <CartDrawer
+        open={cartOpen}
+        onClose={() => setCartOpen(false)}
+        items={cart}
+        onUpdateQty={updateQty}
+        onRemove={removeItem}
+        onViewCart={() => navigate("/cart")}
+        onOrder={() => navigate("/order")}
+      />
+      {toast.visible && <Toast message={toast.msg} onView={() => navigate("/cart")} onClose={hideToast} />}
       <main className="product-page page-main">
       <div className="product-breadcrumb content-shell">
         <NavLink href="/">Home</NavLink>
@@ -118,6 +186,82 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             </div>
           )}
           <p className="product-description">{product.description}</p>
+
+          {/* Color Selector */}
+          <div className="variant-section">
+            <div className="variant-label">
+              <span>Select Color</span>
+              {selectedColor && <em>{selectedColor.name}</em>}
+            </div>
+            <div className="color-swatches">
+              {colors.map((color) => (
+                <button
+                  key={color.name}
+                  className={`color-swatch-btn ${selectedColor?.name === color.name ? "selected" : ""}`}
+                  onClick={() => handleColorSelect(color)}
+                  title={color.name}
+                >
+                  <div className="color-swatch" style={{ background: color.hex }} />
+                  <span>{color.name}</span>
+                </button>
+              ))}
+            </div>
+            {errors.includes("color") && <p className="variant-error">Please select a color to continue.</p>}
+          </div>
+
+          {/* Quantity */}
+          <div className="variant-section">
+            <div className="variant-label"><span>Quantity</span></div>
+            <div className="qty-selector">
+              <button onClick={() => setQty(Math.max(1, qty - 1))} disabled={qty <= 1} aria-label="Decrease quantity">
+                <Icon name="minus" />
+              </button>
+              <span>{qty}</span>
+              <button onClick={() => setQty(qty + 1)} aria-label="Increase quantity">
+                <Icon name="plus" />
+              </button>
+            </div>
+          </div>
+
+          {/* Price Summary */}
+          <div className="price-summary">
+            <div className="price-row"><span>Unit Price</span><span>{formatPrice(unitPrice)}</span></div>
+            <div className="price-row"><span>Quantity</span><span>× {qty}</span></div>
+            <div className="price-row"><span>Delivery</span><span>Free</span></div>
+            <div className="price-row"><span>Total</span><span>{formatPrice(subtotal)}</span></div>
+          </div>
+
+          {/* Actions */}
+          {!added ? (
+            <div className="detail-actions">
+              <button className="action action-dark" onClick={handleAddToCart}>
+                <Icon name="bag" /> Add to Cart
+              </button>
+              <a className="action action-whatsapp" href={whatsapp}>
+                <Icon name="whatsapp" /> Order on WhatsApp
+              </a>
+            </div>
+          ) : (
+            <div className="added-state">
+              <div className="added-confirmation">
+                <span className="check-icon"><Icon name="check" /></span>
+                {product.name} added to your cart.
+              </div>
+              <div className="detail-actions">
+                <NavLink href="/cart" className="action action-dark">
+                  <Icon name="bag" /> View Cart
+                </NavLink>
+                <NavLink href="/furniture" className="action action-outline">
+                  Continue Shopping
+                </NavLink>
+              </div>
+            </div>
+          )}
+
+          <p className="help-note">
+            Have a question? <a href={whatsapp} style={{ textDecoration: "underline" }}>Message us on WhatsApp.</a>
+          </p>
+
           <div className="detail-actions">
             <Action href={whatsapp}>
               <Icon name="whatsapp" /> Order / Inquire on WhatsApp
@@ -188,12 +332,21 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
         </div>
       </section>
       <div className="sticky-mobile-actions">
-        <a href={whatsapp}>
-          <Icon name="whatsapp" /> WhatsApp
-        </a>
-        <a href="tel:+447310613403">
-          <Icon name="phone" /> Call
-        </a>
+        {!added ? <>
+          <button className="action action-dark" onClick={handleAddToCart} style={{ border: "0", flex: "1.7" }}>
+            <Icon name="bag" /> Add to Cart
+          </button>
+          <a href={whatsapp} style={{ flex: "1", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid var(--espresso)", fontSize: ".63rem", fontWeight: 600, letterSpacing: ".08em", textTransform: "uppercase", gap: ".4rem" }}>
+            <Icon name="whatsapp" /> WhatsApp
+          </a>
+        </> : <>
+          <NavLink href="/cart" className="action action-dark flex-[1.7]">
+            <Icon name="bag" /> View Cart
+          </NavLink>
+          <NavLink href="/furniture" className="flex-1 flex items-center justify-center border border-[#211a16] text-[0.63rem] font-semibold tracking-[0.08em] uppercase">
+            Continue
+          </NavLink>
+        </>}
       </div>
       {viewer && (
         <div className="image-viewer">

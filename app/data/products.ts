@@ -18,6 +18,16 @@ type Product = {
   isNew?: boolean;
 };
 
+type SizeOption = { label: string; price: number };
+type ColorOption = { name: string; hex: string; image?: string };
+type CartItem = {
+  id: string;
+  product: Product;
+  size: SizeOption;
+  color: ColorOption;
+  quantity: number;
+};
+
 const images = {
   hero: "/images/hero.jpg",
   living: "https://images.unsplash.com/photo-1705326701287-346fc37a2c86?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=90&w=2000",
@@ -315,5 +325,50 @@ const products: Product[] = [
   },
 ];
 
-export { images, products };
-export type { Product, ProductVariant };
+function cartItemId(slug: string, sizeLabel: string, colorName: string) {
+  return `${slug}--${sizeLabel}--${colorName}`.replace(/\s+/g, "-").toLowerCase();
+}
+
+const productColors: Record<string, ColorOption[]> = {
+  "modern-oak-king-bed": [
+    { name: "Natural Oak", hex: "#C4A882", image: images.bedSingle },
+    { name: "Walnut", hex: "#7B5B3A", image: images.bedDouble },
+    { name: "Dark Brown", hex: "#3D2B1F", image: images.bedKing },
+  ],
+  "arizona-bed": [
+    { name: "Natural Oak", hex: "#C4A882", image: images.arizonaSingle },
+    { name: "Walnut", hex: "#7B5B3A", image: images.arizonaDouble },
+    { name: "Dark Brown", hex: "#3D2B1F", image: images.arizonaKing },
+  ],
+  "elara-lounge-sofa": [
+    { name: "Warm Ivory", hex: "#EDE8DD", image: images.sofa },
+    { name: "Sage", hex: "#A8B5A0", image: images.sofa2 },
+  ],
+  "arco-dining-table": [
+    { name: "Smoked Oak", hex: "#8C7A68", image: images.dining },
+    { name: "Natural Oak", hex: "#C4A882", image: images.dining2 },
+  ],
+  "solace-coffee-table": [
+    { name: "Walnut", hex: "#7B5B3A", image: images.table },
+    { name: "Natural Oak", hex: "#C4A882", image: images.table2 },
+  ],
+  "lina-oak-chair": [
+    { name: "Natural", hex: "#C4A882", image: images.chair },
+    { name: "Walnut", hex: "#7B5B3A", image: images.chair2 },
+  ],
+  "haven-bedside-table": [
+    { name: "Light Oak", hex: "#D4B896", image: images.bedside },
+    { name: "Walnut", hex: "#7B5B3A", image: images.bedside2 },
+  ],
+  "mira-occasional-chair": [
+    { name: "Sand", hex: "#D4C4A8", image: images.occasional },
+    { name: "Olive", hex: "#8A8C6C", image: images.occasional2 },
+  ],
+  "atelier-console": [
+    { name: "Honey Oak", hex: "#C8923A", image: images.console },
+    { name: "Walnut", hex: "#7B5B3A", image: images.console2 },
+  ],
+};
+
+export { images, products, productColors, cartItemId };
+export type { Product, ProductVariant, SizeOption, ColorOption, CartItem };
