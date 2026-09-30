@@ -80,7 +80,7 @@ function Footer() {
               <a href="https://www.instagram.com/oak_and_haven_furniture?utm_source=qr&stkn=NTl1YnY1eWsyYnV4" aria-label="Instagram">
                 <Icon name="instagram" />
               </a>
-              <a href="#" aria-label="Facebook">
+              <a href="https://www.facebook.com/share/19h3hEDbeo/" aria-label="Facebook">
                 <Icon name="facebook" />
               </a>
             </div>
