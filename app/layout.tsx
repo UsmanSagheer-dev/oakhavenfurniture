@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { CartProvider } from "./context/CartContext";
+import FloatingWhatsApp from "./components/FloatingWhatsApp";
 
 export const metadata: Metadata = {
   title: "OAK & HAVEN Furniture",
@@ -12,6 +13,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col">
         <CartProvider>{children}</CartProvider>
+        <FloatingWhatsApp />
       </body>
     </html>
   );

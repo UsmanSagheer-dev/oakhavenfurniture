@@ -107,7 +107,7 @@ export default function OrderPage() {
         <Header path="/order" openSearch={openSearch} cartCount={cartCount} openCart={() => setCartOpen(true)} />
         <SearchOverlay open={search} close={closeSearch} />
         <main className="page-main">
-          <div className="empty-cart content-shell px-8 py-24">
+          <div className="content-shell px-8 py-24">
             <h2 className="font-serif text-[2.5rem] font-normal mb-4">
               Your cart is empty
             </h2>
@@ -128,9 +128,9 @@ export default function OrderPage() {
         <Header path="/order" openSearch={openSearch} cartCount={cartCount} openCart={() => setCartOpen(true)} />
         <SearchOverlay open={search} close={closeSearch} />
         <main className="page-main">
-          <div className="order-success content-shell">
-            <div className="order-success-icon">
-              <Icon name="check" />
+          <div className="flex flex-col items-center text-center p-24 content-shell">
+            <div className="grid place-items-center w-16 h-16 mb-8 bg-[#22c55e] text-white rounded-full">
+              <Icon name="check" className="w-8 h-8" />
             </div>
             <span className="eyebrow">Thank You</span>
             <h1>Order Request Sent</h1>
@@ -138,21 +138,21 @@ export default function OrderPage() {
               Thank you for choosing OAK &amp; HAVEN. Your order details have been sent to our team. We will contact you
               shortly to confirm availability and delivery.
             </p>
-            <div className="order-success-checklist">
-              <div className="success-check-item">
-                <Icon name="check" />
+            <div className="flex flex-col gap-2 my-8 text-left">
+              <div className="flex items-center gap-2 text-[0.75rem]">
+                <Icon name="check" className="w-4 h-4 text-[#22c55e]" />
                 <span>Order request received</span>
               </div>
-              <div className="success-check-item">
-                <Icon name="check" />
+              <div className="flex items-center gap-2 text-[0.75rem]">
+                <Icon name="check" className="w-4 h-4 text-[#22c55e]" />
                 <span>Team will confirm within a few hours</span>
               </div>
-              <div className="success-check-item">
-                <Icon name="check" />
+              <div className="flex items-center gap-2 text-[0.75rem]">
+                <Icon name="check" className="w-4 h-4 text-[#22c55e]" />
                 <span>Delivery details to follow</span>
               </div>
             </div>
-            <div className="order-success-actions">
+            <div className="grid gap-2 my-8">
               <button className="action action-dark" onClick={() => { setOrderSuccess(false); navigate("/furniture"); }}>
                 Continue Shopping
               </button>
@@ -160,7 +160,7 @@ export default function OrderPage() {
                 Back to Home
               </NavLink>
             </div>
-            <p className="order-success-note">
+            <p className="text-[#a69a8d] text-[0.7rem]">
               Need help? <a href="https://wa.me/447310613403" className="underline">
                 Contact us on WhatsApp
               </a>
@@ -185,12 +185,12 @@ export default function OrderPage() {
         onViewCart={() => navigate("/cart")}
         onOrder={() => navigate("/order")}
       />
-      {toast.visible && <Toast message={toast.msg} onView={() => navigate("/cart")} onClose={hideToast} />}
+      {toast.visible && <Toast message={toast.msg} onView={() => navigate("/cart")} onClose={hideToast} visible={toast.visible} />}
       <main className="page-main">
-        <section className="order-page content-shell">
-          <div className="order-layout">
+        <section className="content-shell">
+          <div className="grid grid-cols-[1fr_0.9fr] gap-12 items-start">
             <div>
-              <div className="order-form-head">
+              <div className="mb-8">
                 <span className="eyebrow">Almost there</span>
                 <h1>Complete Your Order</h1>
                 <p>
@@ -198,87 +198,90 @@ export default function OrderPage() {
                   delivery promptly.
                 </p>
               </div>
-              <form className="order-form" onSubmit={handleSubmit} noValidate>
-                <div className="field-row">
-                  <div className="order-field">
-                    <label htmlFor="ord-name">Full Name *</label>
+              <form className="flex flex-col gap-6" onSubmit={handleSubmit} noValidate>
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="ord-name" className="text-[0.6rem] tracking-[0.08em] uppercase font-semibold">Full Name *</label>
                     <input
                       id="ord-name"
                       placeholder="Your full name"
                       value={form.name}
                       onChange={(e) => update("name", e.target.value)}
-                      className={fieldErrors.name ? "error" : ""}
+                      className={`p-2 border-0 border-b border-[rgba(33,26,22,0.15)] outline-0 bg-transparent text-[0.8rem] ${fieldErrors.name ? "border-b-[#b91c1c]" : ""}`}
                     />
-                    {fieldErrors.name && <span className="field-error">{fieldErrors.name}</span>}
+                    {fieldErrors.name && <span className="text-[#b91c1c] text-[0.6rem]">{fieldErrors.name}</span>}
                   </div>
-                  <div className="order-field">
-                    <label htmlFor="ord-phone">Phone Number *</label>
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="ord-phone" className="text-[0.6rem] tracking-[0.08em] uppercase font-semibold">Phone Number *</label>
                     <input
                       id="ord-phone"
                       type="tel"
                       placeholder="+92 300 000 0000"
                       value={form.phone}
                       onChange={(e) => update("phone", e.target.value)}
-                      className={fieldErrors.phone ? "error" : ""}
+                      className={`p-2 border-0 border-b border-[rgba(33,26,22,0.15)] outline-0 bg-transparent text-[0.8rem] ${fieldErrors.phone ? "border-b-[#b91c1c]" : ""}`}
                     />
-                    {fieldErrors.phone && <span className="field-error">{fieldErrors.phone}</span>}
+                    {fieldErrors.phone && <span className="text-[#b91c1c] text-[0.6rem]">{fieldErrors.phone}</span>}
                   </div>
                 </div>
-                <div className="field-row">
-                  <div className="order-field">
-                    <label htmlFor="ord-wa">WhatsApp Number</label>
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="ord-wa" className="text-[0.6rem] tracking-[0.08em] uppercase font-semibold">WhatsApp Number</label>
                     <input
                       id="ord-wa"
                       type="tel"
                       placeholder="If different from phone"
                       value={form.whatsapp}
                       onChange={(e) => update("whatsapp", e.target.value)}
+                      className="p-2 border-0 border-b border-[rgba(33,26,22,0.15)] outline-0 bg-transparent text-[0.8rem]"
                     />
                   </div>
-                  <div className="order-field">
-                    <label htmlFor="ord-city">City *</label>
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="ord-city" className="text-[0.6rem] tracking-[0.08em] uppercase font-semibold">City *</label>
                     <input
                       id="ord-city"
                       placeholder="e.g. Lahore, Karachi"
                       value={form.city}
                       onChange={(e) => update("city", e.target.value)}
-                      className={fieldErrors.city ? "error" : ""}
+                      className={`p-2 border-0 border-b border-[rgba(33,26,22,0.15)] outline-0 bg-transparent text-[0.8rem] ${fieldErrors.city ? "border-b-[#b91c1c]" : ""}`}
                     />
-                    {fieldErrors.city && <span className="field-error">{fieldErrors.city}</span>}
+                    {fieldErrors.city && <span className="text-[#b91c1c] text-[0.6rem]">{fieldErrors.city}</span>}
                   </div>
                 </div>
-                <div className="order-field">
-                  <label htmlFor="ord-address">Delivery Address *</label>
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="ord-address" className="text-[0.6rem] tracking-[0.08em] uppercase font-semibold">Delivery Address *</label>
                   <textarea
                     id="ord-address"
                     placeholder="House no., street, area, city"
                     value={form.address}
                     onChange={(e) => update("address", e.target.value)}
-                    className={fieldErrors.address ? "error" : ""}
+                    className={`min-h-16 p-2 border-0 border-b border-[rgba(33,26,22,0.15)] outline-0 bg-transparent text-[0.8rem] resize-vertical ${fieldErrors.address ? "border-b-[#b91c1c]" : ""}`}
                   />
-                  {fieldErrors.address && <span className="field-error">{fieldErrors.address}</span>}
+                  {fieldErrors.address && <span className="text-[#b91c1c] text-[0.6rem]">{fieldErrors.address}</span>}
                 </div>
-                <div className="field-row">
-                  <div className="order-field">
-                    <label htmlFor="ord-time">Preferred Delivery Time</label>
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="ord-time" className="text-[0.6rem] tracking-[0.08em] uppercase font-semibold">Preferred Delivery Time</label>
                     <input
                       id="ord-time"
                       placeholder="e.g. Weekday mornings"
                       value={form.deliveryTime}
                       onChange={(e) => update("deliveryTime", e.target.value)}
+                      className="p-2 border-0 border-b border-[rgba(33,26,22,0.15)] outline-0 bg-transparent text-[0.8rem]"
                     />
                   </div>
-                  <div className="order-field">
-                    <label htmlFor="ord-notes">Additional Notes</label>
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="ord-notes" className="text-[0.6rem] tracking-[0.08em] uppercase font-semibold">Additional Notes</label>
                     <input
                       id="ord-notes"
                       placeholder="Anything else we should know?"
                       value={form.notes}
                       onChange={(e) => update("notes", e.target.value)}
+                      className="p-2 border-0 border-b border-[rgba(33,26,22,0.15)] outline-0 bg-transparent text-[0.8rem]"
                     />
                   </div>
                 </div>
-                <div className="order-form-actions">
+                <div className="grid gap-2 mt-4">
                   <button type="submit" className="action action-dark">
                     <Icon name="whatsapp" /> Confirm &amp; Send to WhatsApp
                   </button>
@@ -288,32 +291,32 @@ export default function OrderPage() {
                 </div>
               </form>
             </div>
-            <div className="order-summary-card">
-              <h2>Order Summary</h2>
+            <div className="p-6 bg-[#efe8de] sticky top-32">
+              <h2 className="m-0 mb-4 font-serif text-[1.3rem] font-medium">Order Summary</h2>
               {cart.map((item) => (
-                <div className="order-item" key={item.id}>
-                  <div className="order-item-img">
-                    <img src={item.color.image || item.product.variants[0].image} alt={item.product.name} />
+                <div className="grid grid-cols-[4rem_1fr] gap-4 py-3 border-b border-[rgba(33,26,22,0.15)]" key={item.id}>
+                  <div className="aspect-square overflow-hidden bg-white">
+                    <img src={item.color.image || item.product.variants[0].image} alt={item.product.name} className="w-full h-full object-cover" />
                   </div>
-                  <div className="order-item-info">
-                    <span className="order-item-name">{item.product.name}</span>
-                    <span className="order-item-variant">
+                  <div className="flex flex-col gap-1">
+                    <span className="font-serif text-[0.85rem] font-medium">{item.product.name}</span>
+                    <span className="text-[0.6rem] text-[#a69a8d]">
                       {item.size.label} · {item.color.name} · Qty {item.quantity}
                     </span>
-                    <span className="order-item-price">{formatPrice(item.size.price * item.quantity)}</span>
+                    <span className="text-[0.75rem] font-semibold">{formatPrice(item.size.price * item.quantity)}</span>
                   </div>
                 </div>
               ))}
-              <div className="summary-rows mt-2">
-                <div className="summary-row">
+              <div className="flex flex-col gap-2 py-4 mt-2">
+                <div className="flex justify-between">
                   <span>Subtotal</span>
                   <span>{formatPrice(subtotal)}</span>
                 </div>
-                <div className="summary-row">
+                <div className="flex justify-between">
                   <span>Delivery</span>
                   <span className="text-[#647458]">Free</span>
                 </div>
-                <div className="summary-row total">
+                <div className="flex justify-between pt-2 mt-1 font-semibold text-[0.9rem]">
                   <span>Total</span>
                   <span>{formatPrice(subtotal)}</span>
                 </div>

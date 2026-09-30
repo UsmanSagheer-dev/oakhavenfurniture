@@ -77,13 +77,6 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     return () => { document.body.style.overflow = ""; };
   }, [search, cartOpen]);
 
-  const message = encodeURIComponent(
-    selectedColor
-      ? `Assalam o Alaikum, I'm interested in the ${product.name} (${selectedVariant.size}, ${selectedColor.name}) from OAK & HAVEN FURNITURE for ${formatPrice(unitPrice)}. Please share availability and delivery details.`
-      : `Assalam o Alaikum, I'm interested in the ${product.name} (${selectedVariant.size}) listed on OAK & HAVEN FURNITURE for ${formatPrice(selectedVariant.price)}. Please share availability and delivery details.`
-  );
-  const whatsapp = `https://wa.me/447310613403?text=${message}`;
-
   return (
     <>
       <Header path={`/product/${slug}`} openSearch={openSearch} cartCount={cartCount} openCart={() => setCartOpen(true)} />
@@ -97,7 +90,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
         onViewCart={() => navigate("/cart")}
         onOrder={() => navigate("/order")}
       />
-      {toast.visible && <Toast message={toast.msg} onView={() => navigate("/cart")} onClose={hideToast} />}
+      {toast.visible && <Toast message={toast.msg} onView={() => navigate("/cart")} onClose={hideToast} visible={toast.visible} />}
       <main className="product-page page-main">
       <div className="product-breadcrumb content-shell">
         <NavLink href="/">Home</NavLink>
@@ -188,66 +181,68 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
           <p className="product-description">{product.description}</p>
 
           {/* Color Selector */}
-          <div className="variant-section">
-            <div className="variant-label">
+          <div className="mt-6">
+            <div className="flex justify-between items-center mb-2 text-[0.63rem] font-semibold tracking-widest uppercase text-[#211a16]">
               <span>Select Color</span>
-              {selectedColor && <em>{selectedColor.name}</em>}
+              {selectedColor && <em className="text-[#a69a8d] font-normal text-[0.6rem]">{selectedColor.name}</em>}
             </div>
-            <div className="color-swatches">
+            <div className="flex flex-wrap gap-2">
               {colors.map((color) => (
                 <button
                   key={color.name}
-                  className={`color-swatch-btn ${selectedColor?.name === color.name ? "selected" : ""}`}
+                  className={`flex flex-col items-center gap-1 p-0 border-2 bg-transparent cursor-pointer transition-colors ${selectedColor?.name === color.name ? "border-[#211a16]" : "border-transparent hover:border-[rgba(33,26,22,0.15)]"}`}
                   onClick={() => handleColorSelect(color)}
                   title={color.name}
                 >
-                  <div className="color-swatch" style={{ background: color.hex }} />
-                  <span>{color.name}</span>
+                  <div className="w-8 h-8 rounded-full border border-black/10" style={{ background: color.hex }} />
+                  <span className="text-[0.65rem]">{color.name}</span>
                 </button>
               ))}
             </div>
-            {errors.includes("color") && <p className="variant-error">Please select a color to continue.</p>}
+            {errors.includes("color") && <p className="mt-2 text-[#b91c1c] text-[0.65rem]">Please select a color to continue.</p>}
           </div>
 
           {/* Quantity */}
-          <div className="variant-section">
-            <div className="variant-label"><span>Quantity</span></div>
-            <div className="qty-selector">
-              <button onClick={() => setQty(Math.max(1, qty - 1))} disabled={qty <= 1} aria-label="Decrease quantity">
+          <div className="mt-6">
+            <div className="text-[0.63rem] font-semibold tracking-widest uppercase text-[#211a16] mb-2"><span>Quantity</span></div>
+            <div className="inline-flex items-center gap-2 p-1 border border-[rgba(33,26,22,0.15)] bg-[#f7f3ec]">
+              <button onClick={() => setQty(Math.max(1, qty - 1))} disabled={qty <= 1} aria-label="Decrease quantity" className="grid place-items-center w-6 h-6 p-0 border-0 bg-transparent cursor-pointer text-[#211a16] disabled:opacity-30 disabled:cursor-not-allowed">
                 <Icon name="minus" />
               </button>
-              <span>{qty}</span>
-              <button onClick={() => setQty(qty + 1)} aria-label="Increase quantity">
+              <span className="min-w-[1.2rem] text-center text-[0.75rem] font-semibold">{qty}</span>
+              <button onClick={() => setQty(qty + 1)} aria-label="Increase quantity" className="grid place-items-center w-6 h-6 p-0 border-0 bg-transparent cursor-pointer text-[#211a16]">
                 <Icon name="plus" />
               </button>
             </div>
           </div>
 
           {/* Price Summary */}
-          <div className="price-summary">
-            <div className="price-row"><span>Unit Price</span><span>{formatPrice(unitPrice)}</span></div>
-            <div className="price-row"><span>Quantity</span><span>× {qty}</span></div>
-            <div className="price-row"><span>Delivery</span><span>Free</span></div>
-            <div className="price-row"><span>Total</span><span>{formatPrice(subtotal)}</span></div>
+          <div className="mt-6 p-4 bg-[#efe8de]">
+            <div className="flex justify-between py-1 text-[0.7rem]"><span>Unit Price</span><span>{formatPrice(unitPrice)}</span></div>
+            <div className="flex justify-between py-1 text-[0.7rem]"><span>Quantity</span><span>× {qty}</span></div>
+            <div className="flex justify-between py-1 text-[0.7rem]"><span>Delivery</span><span>Free</span></div>
+            <div className="flex justify-between py-1 mt-1 pt-2 border-t border-[rgba(33,26,22,0.15)] font-semibold text-[0.8rem]"><span>Total</span><span>{formatPrice(subtotal)}</span></div>
           </div>
 
           {/* Actions */}
           {!added ? (
-            <div className="detail-actions">
+            <div className="grid gap-2 mb-3">
               <button className="action action-dark" onClick={handleAddToCart}>
                 <Icon name="bag" /> Add to Cart
               </button>
-              <a className="action action-whatsapp" href={whatsapp}>
+              <a className="action action-whatsapp" href={`https://wa.me/447310613403?text=${encodeURIComponent(`Assalam o Alaikum, I'm interested in the ${product.name} (${selectedVariant.size}) listed on OAK & HAVEN FURNITURE for ${formatPrice(selectedVariant.price)}. Please share availability and delivery details.`)}`}>
                 <Icon name="whatsapp" /> Order on WhatsApp
               </a>
             </div>
           ) : (
-            <div className="added-state">
-              <div className="added-confirmation">
-                <span className="check-icon"><Icon name="check" /></span>
+            <div className="my-4  p-4 bg-[#f0fdf4] border border-[#86efac]">
+              <div className="flex items-center gap-2 mb-4 text-[0.75rem] text-[#166534]">
+                <span className="grid place-items-center w-5 h-5 bg-[#22c55e] text-white rounded-full">
+                  <Icon name="check" className="w-3.5 h-3.5" />
+                </span>
                 {product.name} added to your cart.
               </div>
-              <div className="detail-actions">
+              <div className="grid gap-2">
                 <NavLink href="/cart" className="action action-dark">
                   <Icon name="bag" /> View Cart
                 </NavLink>
@@ -258,21 +253,14 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             </div>
           )}
 
-          <p className="help-note">
-            Have a question? <a href={whatsapp} className="underline">Message us on WhatsApp.</a>
-          </p>
-
           <div className="detail-actions">
-            <Action href={whatsapp}>
-              <Icon name="whatsapp" /> Order / Inquire on WhatsApp
-            </Action>
-            <Action href="tel:+447310613403" variant="outline">
+            {/* <Action href="tel:+447310613403" variant="outline">
               <Icon name="phone" /> Call us
-            </Action>
+            </Action> */}
           </div>
-          <p className="help-note">
+          {/* <p className="help-note">
             Have a question about this piece? Our team is happy to help.
-          </p>
+          </p> */}
           <div className="detail-notes">
             <div>
               <span>Delivery</span>
@@ -316,9 +304,6 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
           Free home delivery is available on eligible products and locations.
           Please contact us to confirm delivery availability for your area.
         </p>
-        <a href={whatsapp}>
-          Confirm your location <Icon name="arrow" />
-        </a>
       </section>
       <section className="related content-shell">
         <SectionTitle eyebrow="Complete your space" title="You May Also Like" />
@@ -336,7 +321,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
           <button className="action action-dark border-0 flex-[1.7]" onClick={handleAddToCart}>
             <Icon name="bag" /> Add to Cart
           </button>
-          <a href={whatsapp} className="flex-1 flex items-center justify-center border border-[#211a16] text-[0.63rem] font-semibold tracking-[0.08em] uppercase gap-1">
+          <a href={`https://wa.me/447310613403?text=${encodeURIComponent(`Assalam o Alaikum, I'm interested in the ${product.name} (${selectedVariant.size}) listed on OAK & HAVEN FURNITURE for ${formatPrice(selectedVariant.price)}. Please share availability and delivery details.`)}`} className="flex-1 flex items-center justify-center border border-[#211a16] text-[0.63rem] font-semibold tracking-[0.08em] uppercase gap-1">
             <Icon name="whatsapp" /> WhatsApp
           </a>
         </> : <>

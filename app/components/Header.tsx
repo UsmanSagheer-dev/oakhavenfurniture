@@ -28,6 +28,7 @@ function Header({
     { href: "/furniture/bedroom", label: "Bedroom" },
     { href: "/furniture/living-room", label: "Living" },
     { href: "/furniture/dining", label: "Dining" },
+    { href: "/contact", label: "Contact" },
   ];
 
   useEffect(() => {
@@ -50,19 +51,19 @@ function Header({
             <Icon name="search" />
             <span>Search</span>
           </button>
-          <button
+          {/* <button
             className="tool-button desktop-tool"
             aria-label="Saved pieces"
           >
             <Icon name="heart" />
-          </button>
-          <a
+          </button> */}
+          {/* <a
             className="tool-button desktop-tool"
             aria-label="WhatsApp"
             href={createGeneralWhatsAppLink()}
           >
             <Icon name="whatsapp" />
-          </a>
+          </a> */}
           <button
             className="tool-button cart-icon-wrap"
             aria-label="View cart"

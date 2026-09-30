@@ -65,7 +65,7 @@ export default function FurniturePage() {
         onViewCart={() => navigate("/cart")}
         onOrder={() => navigate("/order")}
       />
-      {toast.visible && <Toast message={toast.msg} onView={() => navigate("/cart")} onClose={hideToast} />}
+      {toast.visible && <Toast message={toast.msg} onView={() => navigate("/cart")} onClose={hideToast} visible={toast.visible} />}
       <main className="page-main">
       <div className="content-shell">
         <FurnitureHero />

@@ -77,7 +77,7 @@ function Footer() {
             <Logo light />
             <p>Furniture for beautiful living.</p>
             <div>
-              <a href="#" aria-label="Instagram">
+              <a href="https://www.instagram.com/oak_and_haven_furniture?utm_source=qr&stkn=NTl1YnY1eWsyYnV4" aria-label="Instagram">
                 <Icon name="instagram" />
               </a>
               <a href="#" aria-label="Facebook">
@@ -105,7 +105,7 @@ function Footer() {
         <div className="footer-bottom">
           <span>© 2026 OAK &amp; HAVEN FURNITURE</span>
           <span>All Rights Reserved.</span>
-          <span>Pakistan</span>
+          <span>United Kingdom</span>
         </div>
       </footer>
     </>

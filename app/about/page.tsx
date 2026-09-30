@@ -43,7 +43,7 @@ export default function AboutPage() {
         onViewCart={() => navigate("/cart")}
         onOrder={() => navigate("/order")}
       />
-      {toast.visible && <Toast message={toast.msg} onView={() => navigate("/cart")} onClose={hideToast} />}
+      {toast.visible && <Toast message={toast.msg} onView={() => navigate("/cart")} onClose={hideToast} visible={toast.visible} />}
       <main className="page-main">
       <section className="about-hero">
         <img src={images.sofa2} alt="Beautifully curated living room" />

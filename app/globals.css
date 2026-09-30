@@ -490,6 +490,15 @@ p {
   padding: 0;
   min-height: auto;
 }
+.action-whatsapp {
+  background: #25d366;
+  color: var(--white);
+  border-color: #25d366;
+}
+.action-whatsapp:hover {
+  background: #20bd5a;
+  border-color: #20bd5a;
+}
 .scroll-cue {
   position: absolute;
   z-index: 2;
@@ -1256,7 +1265,7 @@ p {
   box-shadow: 0 10px 30px rgba(33, 26, 22, 0.25);
   transition: transform 0.4s cubic-bezier(0.2, 0.75, 0.3, 1);
 }
-.toast.is-visible {
+.toast[data-visible="true"] {
   transform: translateX(-50%) translateY(0);
 }
 .toast-check {
@@ -1662,11 +1671,16 @@ p {
   display: grid;
   grid-template-columns: 1fr 0.9fr;
   gap: 3rem;
+  align-items: start;
 }
 .cart-items {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+}
+.cart-summary-card {
+  position: sticky;
+  top: 8rem;
 }
 .cart-item {
   display: grid;
@@ -1770,6 +1784,11 @@ p {
   display: grid;
   grid-template-columns: 1fr 0.9fr;
   gap: 3rem;
+  align-items: start;
+}
+.order-summary-card {
+  position: sticky;
+  top: 8rem;
 }
 .order-form-head {
   margin-bottom: 2rem;
