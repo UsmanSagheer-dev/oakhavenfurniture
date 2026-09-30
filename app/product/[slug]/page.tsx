@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, use } from "react";
-import { products, images } from "../../data/products";
+import { products, images, productColors, cartItemId, Product, SizeOption, ColorOption, CartItem } from "../../data/products";
 import NavLink from "../../components/NavLink";
 import Action from "../../components/Action";
 import Icon from "../../components/Icon";
@@ -11,6 +11,9 @@ import { formatPrice } from "../../utils/formatPrice";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import SearchOverlay from "../../components/SearchOverlay";
+import CartDrawer from "../../components/CartDrawer";
+import Toast from "../../components/Toast";
+import { useCart } from "../../context/CartContext";
 
 export default function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
@@ -19,17 +22,75 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   const [activeImage, setActiveImage] = useState(selectedVariant.image);
   const [viewer, setViewer] = useState(false);
   const [search, setSearch] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [qty, setQty] = useState(1);
+  const [added, setAdded] = useState(false);
   const openSearch = () => setSearch(true);
   const closeSearch = () => setSearch(false);
-  useEffect(() => setActiveImage(selectedVariant.image), [selectedVariant]);
-  const message = encodeURIComponent(
-    `Assalam o Alaikum, I'm interested in the ${product.name} (${selectedVariant.size}) listed on OAK & HAVEN FURNITURE for ${formatPrice(selectedVariant.price)}. Please share availability and delivery details.`,
-  );
-  const whatsapp = `https://wa.me/447310613403?text=${message}`;
+
+  const { cart, cartCount, addToCart, updateQty, removeItem, toast, hideToast } = useCart();
+
+  const colors: ColorOption[] = productColors[product.slug] || [{ name: "Natural Oak", hex: "#C4A882", image: product.variants[0].image }];
+  const [selectedColor, setSelectedColor] = useState<ColorOption | null>(null);
+  const [errors, setErrors] = useState<string[]>([]);
+
+  useEffect(() => {
+    setActiveImage(selectedVariant.image);
+    setSelectedColor(null);
+    setQty(1);
+    setAdded(false);
+    setErrors([]);
+  }, [product, selectedVariant]);
+
+  const unitPrice = selectedVariant.price;
+  const subtotal = unitPrice * qty;
+
+  const handleColorSelect = (color: ColorOption) => {
+    setSelectedColor(color);
+    if (color.image) setActiveImage(color.image);
+  };
+
+  const handleAddToCart = () => {
+    const errs: string[] = [];
+    if (!selectedColor) errs.push("color");
+    if (errs.length) { setErrors(errs); return; }
+    setErrors([]);
+    const item: CartItem = {
+      id: cartItemId(product.slug, selectedVariant.size, selectedColor!.name),
+      product,
+      size: { label: selectedVariant.size, price: selectedVariant.price },
+      color: selectedColor!,
+      quantity: qty,
+    };
+    addToCart(item);
+    setAdded(true);
+  };
+
+  const navigate = (href: string) => {
+    window.history.pushState({}, "", href);
+    window.dispatchEvent(new PopStateEvent("popstate"));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    document.body.style.overflow = search || cartOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [search, cartOpen]);
+
   return (
     <>
-      <Header path={`/product/${slug}`} openSearch={openSearch} />
+      <Header path={`/product/${slug}`} openSearch={openSearch} cartCount={cartCount} openCart={() => setCartOpen(true)} />
       <SearchOverlay open={search} close={closeSearch} />
+      <CartDrawer
+        open={cartOpen}
+        onClose={() => setCartOpen(false)}
+        items={cart}
+        onUpdateQty={updateQty}
+        onRemove={removeItem}
+        onViewCart={() => navigate("/cart")}
+        onOrder={() => navigate("/order")}
+      />
+      {toast.visible && <Toast message={toast.msg} onView={() => navigate("/cart")} onClose={hideToast} visible={toast.visible} />}
       <main className="product-page page-main">
       <div className="product-breadcrumb content-shell">
         <NavLink href="/">Home</NavLink>
@@ -118,17 +179,88 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             </div>
           )}
           <p className="product-description">{product.description}</p>
-          <div className="detail-actions">
-            <Action href={whatsapp}>
-              <Icon name="whatsapp" /> Order / Inquire on WhatsApp
-            </Action>
-            <Action href="tel:+447310613403" variant="outline">
-              <Icon name="phone" /> Call us
-            </Action>
+
+          {/* Color Selector */}
+          <div className="mt-6">
+            <div className="flex justify-between items-center mb-2 text-[0.63rem] font-semibold tracking-widest uppercase text-[#211a16]">
+              <span>Select Color</span>
+              {selectedColor && <em className="text-[#a69a8d] font-normal text-[0.6rem]">{selectedColor.name}</em>}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {colors.map((color) => (
+                <button
+                  key={color.name}
+                  className={`flex flex-col items-center gap-1 p-0 border-2 bg-transparent cursor-pointer transition-colors ${selectedColor?.name === color.name ? "border-[#211a16]" : "border-transparent hover:border-[rgba(33,26,22,0.15)]"}`}
+                  onClick={() => handleColorSelect(color)}
+                  title={color.name}
+                >
+                  <div className="w-8 h-8 rounded-full border border-black/10" style={{ background: color.hex }} />
+                  <span className="text-[0.65rem]">{color.name}</span>
+                </button>
+              ))}
+            </div>
+            {errors.includes("color") && <p className="mt-2 text-[#b91c1c] text-[0.65rem]">Please select a color to continue.</p>}
           </div>
-          <p className="help-note">
+
+          {/* Quantity */}
+          <div className="mt-6">
+            <div className="text-[0.63rem] font-semibold tracking-widest uppercase text-[#211a16] mb-2"><span>Quantity</span></div>
+            <div className="inline-flex items-center gap-2 p-1 border border-[rgba(33,26,22,0.15)] bg-[#f7f3ec]">
+              <button onClick={() => setQty(Math.max(1, qty - 1))} disabled={qty <= 1} aria-label="Decrease quantity" className="grid place-items-center w-6 h-6 p-0 border-0 bg-transparent cursor-pointer text-[#211a16] disabled:opacity-30 disabled:cursor-not-allowed">
+                <Icon name="minus" />
+              </button>
+              <span className="min-w-[1.2rem] text-center text-[0.75rem] font-semibold">{qty}</span>
+              <button onClick={() => setQty(qty + 1)} aria-label="Increase quantity" className="grid place-items-center w-6 h-6 p-0 border-0 bg-transparent cursor-pointer text-[#211a16]">
+                <Icon name="plus" />
+              </button>
+            </div>
+          </div>
+
+          {/* Price Summary */}
+          <div className="mt-6 p-4 bg-[#efe8de]">
+            <div className="flex justify-between py-1 text-[0.7rem]"><span>Unit Price</span><span>{formatPrice(unitPrice)}</span></div>
+            <div className="flex justify-between py-1 text-[0.7rem]"><span>Quantity</span><span>× {qty}</span></div>
+            <div className="flex justify-between py-1 text-[0.7rem]"><span>Delivery</span><span>Free</span></div>
+            <div className="flex justify-between py-1 mt-1 pt-2 border-t border-[rgba(33,26,22,0.15)] font-semibold text-[0.8rem]"><span>Total</span><span>{formatPrice(subtotal)}</span></div>
+          </div>
+
+          {/* Actions */}
+          {!added ? (
+            <div className="grid gap-2 mb-3">
+              <button className="action action-dark" onClick={handleAddToCart}>
+                <Icon name="bag" /> Add to Cart
+              </button>
+              <a className="action action-whatsapp" href={`https://wa.me/447310613403?text=${encodeURIComponent(`Assalam o Alaikum, I'm interested in the ${product.name} (${selectedVariant.size}) listed on OAK & HAVEN FURNITURE for ${formatPrice(selectedVariant.price)}. Please share availability and delivery details.`)}`}>
+                <Icon name="whatsapp" /> Order on WhatsApp
+              </a>
+            </div>
+          ) : (
+            <div className="my-4  p-4 bg-[#f0fdf4] border border-[#86efac]">
+              <div className="flex items-center gap-2 mb-4 text-[0.75rem] text-[#166534]">
+                <span className="grid place-items-center w-5 h-5 bg-[#22c55e] text-white rounded-full">
+                  <Icon name="check" className="w-3.5 h-3.5" />
+                </span>
+                {product.name} added to your cart.
+              </div>
+              <div className="grid gap-2">
+                <NavLink href="/cart" className="action action-dark">
+                  <Icon name="bag" /> View Cart
+                </NavLink>
+                <NavLink href="/furniture" className="action action-outline">
+                  Continue Shopping
+                </NavLink>
+              </div>
+            </div>
+          )}
+
+          <div className="detail-actions">
+            {/* <Action href="tel:+447310613403" variant="outline">
+              <Icon name="phone" /> Call us
+            </Action> */}
+          </div>
+          {/* <p className="help-note">
             Have a question about this piece? Our team is happy to help.
-          </p>
+          </p> */}
           <div className="detail-notes">
             <div>
               <span>Delivery</span>
@@ -172,9 +304,6 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
           Free home delivery is available on eligible products and locations.
           Please contact us to confirm delivery availability for your area.
         </p>
-        <a href={whatsapp}>
-          Confirm your location <Icon name="arrow" />
-        </a>
       </section>
       <section className="related content-shell">
         <SectionTitle eyebrow="Complete your space" title="You May Also Like" />
@@ -188,12 +317,21 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
         </div>
       </section>
       <div className="sticky-mobile-actions">
-        <a href={whatsapp}>
-          <Icon name="whatsapp" /> WhatsApp
-        </a>
-        <a href="tel:+447310613403">
-          <Icon name="phone" /> Call
-        </a>
+        {!added ? <>
+          <button className="action action-dark border-0 flex-[1.7]" onClick={handleAddToCart}>
+            <Icon name="bag" /> Add to Cart
+          </button>
+          <a href={`https://wa.me/447310613403?text=${encodeURIComponent(`Assalam o Alaikum, I'm interested in the ${product.name} (${selectedVariant.size}) listed on OAK & HAVEN FURNITURE for ${formatPrice(selectedVariant.price)}. Please share availability and delivery details.`)}`} className="flex-1 flex items-center justify-center border border-[#211a16] text-[0.63rem] font-semibold tracking-[0.08em] uppercase gap-1">
+            <Icon name="whatsapp" /> WhatsApp
+          </a>
+        </> : <>
+          <NavLink href="/cart" className="action action-dark flex-[1.7]">
+            <Icon name="bag" /> View Cart
+          </NavLink>
+          <NavLink href="/furniture" className="flex-1 flex items-center justify-center border border-[#211a16] text-[0.63rem] font-semibold tracking-[0.08em] uppercase">
+            Continue
+          </NavLink>
+        </>}
       </div>
       {viewer && (
         <div className="image-viewer">

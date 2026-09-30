@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { products } from "../data/products";
 import ProductCard from "../components/ProductCard";
 import Icon from "../components/Icon";
@@ -8,14 +8,31 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import SearchOverlay from "../components/SearchOverlay";
 import FurnitureHero from "../components/FurnitureHero";
+import CartDrawer from "../components/CartDrawer";
+import Toast from "../components/Toast";
+import { useCart } from "../context/CartContext";
 
 export default function FurniturePage() {
   const [filter, setFilter] = useState("All");
   const [sort, setSort] = useState("featured");
   const [drawer, setDrawer] = useState(false);
   const [search, setSearch] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const openSearch = () => setSearch(true);
   const closeSearch = () => setSearch(false);
+
+  const { cart, cartCount, updateQty, removeItem, toast, hideToast } = useCart();
+
+  const navigate = (href: string) => {
+    window.history.pushState({}, "", href);
+    window.dispatchEvent(new PopStateEvent("popstate"));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    document.body.style.overflow = search || cartOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [search, cartOpen]);
 
   const shown = useMemo(() => {
     const selected =
@@ -37,8 +54,18 @@ export default function FurniturePage() {
 
   return (
     <>
-      <Header path="/furniture" openSearch={openSearch} />
+      <Header path="/furniture" openSearch={openSearch} cartCount={cartCount} openCart={() => setCartOpen(true)} />
       <SearchOverlay open={search} close={closeSearch} />
+      <CartDrawer
+        open={cartOpen}
+        onClose={() => setCartOpen(false)}
+        items={cart}
+        onUpdateQty={updateQty}
+        onRemove={removeItem}
+        onViewCart={() => navigate("/cart")}
+        onOrder={() => navigate("/order")}
+      />
+      {toast.visible && <Toast message={toast.msg} onView={() => navigate("/cart")} onClose={hideToast} visible={toast.visible} />}
       <main className="page-main">
       <div className="content-shell">
         <FurnitureHero />
