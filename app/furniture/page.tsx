@@ -10,6 +10,7 @@ import SearchOverlay from "../components/SearchOverlay";
 import FurnitureHero from "../components/FurnitureHero";
 import CartDrawer from "../components/CartDrawer";
 import Toast from "../components/Toast";
+import SortSelect from "../components/SortSelect";
 import { useCart } from "../context/CartContext";
 
 export default function FurniturePage() {
@@ -21,7 +22,15 @@ export default function FurniturePage() {
   const openSearch = () => setSearch(true);
   const closeSearch = () => setSearch(false);
 
-  const { cart, cartCount, updateQty, removeItem, toast, hideToast } = useCart();
+  const sortOptions = [
+    { value: "featured", label: "Featured" },
+    { value: "newest", label: "Newest" },
+    { value: "low", label: "Price: Low to High" },
+    { value: "high", label: "Price: High to Low" },
+  ];
+
+  const { cart, cartCount, updateQty, removeItem, toast, hideToast } =
+    useCart();
 
   const navigate = (href: string) => {
     window.history.pushState({}, "", href);
@@ -31,7 +40,9 @@ export default function FurniturePage() {
 
   useEffect(() => {
     document.body.style.overflow = search || cartOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [search, cartOpen]);
 
   const shown = useMemo(() => {
@@ -54,7 +65,12 @@ export default function FurniturePage() {
 
   return (
     <>
-      <Header path="/furniture" openSearch={openSearch} cartCount={cartCount} openCart={() => setCartOpen(true)} />
+      <Header
+        path="/furniture"
+        openSearch={openSearch}
+        cartCount={cartCount}
+        openCart={() => setCartOpen(true)}
+      />
       <SearchOverlay open={search} close={closeSearch} />
       <CartDrawer
         open={cartOpen}
@@ -65,87 +81,93 @@ export default function FurniturePage() {
         onViewCart={() => navigate("/cart")}
         onOrder={() => navigate("/order")}
       />
-      {toast.visible && <Toast message={toast.msg} onView={() => navigate("/cart")} onClose={hideToast} visible={toast.visible} />}
+      {toast.visible && (
+        <Toast
+          message={toast.msg}
+          onView={() => navigate("/cart")}
+          onClose={hideToast}
+          visible={toast.visible}
+        />
+      )}
       <main className="page-main">
-      <div className="content-shell">
-        <FurnitureHero />
-      </div>
-      <section className="catalog content-shell">
-        <div className="catalog-toolbar">
-          <span>Showing {shown.length} products</span>
-          <button className="filter-trigger" onClick={() => setDrawer(true)}>
-            <Icon name="filter" /> Filter
-          </button>
-          <label>
-            Sort by{" "}
-            <select value={sort} onChange={(e) => setSort(e.target.value)}>
-              <option value="featured">Featured</option>
-              <option value="newest">Newest</option>
-              <option value="low">Price: Low to High</option>
-              <option value="high">Price: High to Low</option>
-            </select>
-          </label>
+        <div className="content-shell">
+          <FurnitureHero />
         </div>
-        <div className="catalog-layout">
-          <aside className={`filters ${drawer ? "is-open" : ""}`}>
-            <div className="filter-mobile-top">
-              <strong>Filter</strong>
-              <button onClick={() => setDrawer(false)}>
-                <Icon name="close" />
-              </button>
-            </div>
-            <div className="filter-block">
-              <span>Category</span>
-              {[
-                "All",
-                "Bedroom",
-                "Living Room",
-                "Dining",
-                "Tables",
-                "Seating",
-              ].map((item) => (
-                <button
-                  className={
-                    filter.toLowerCase() === item.toLowerCase() ? "active" : ""
-                  }
-                  onClick={() => {
-                    setFilter(item);
-                    setDrawer(false);
-                  }}
-                  key={item}
-                >
-                  {item}
-                  <small>
-                    {item === "All"
-                      ? products.length
-                      : products.filter((p) => p.category === item).length}
-                  </small>
+        <section className="catalog content-shell">
+          <div className="catalog-toolbar">
+            <span>Showing {shown.length} products</span>
+            <button className="filter-trigger" onClick={() => setDrawer(true)}>
+              Filter
+            </button>
+            <SortSelect
+              label="Sort by"
+              value={sort}
+              onChange={setSort}
+              options={sortOptions}
+            />
+          </div>
+          <div className="catalog-layout">
+            <aside className={`filters ${drawer ? "is-open" : ""}`}>
+              <div className="filter-mobile-top">
+                <strong>Filter</strong>
+                <button onClick={() => setDrawer(false)}>
+                  <Icon name="close" />
                 </button>
+              </div>
+              <div className="filter-block">
+                <span>Category</span>
+                {[
+                  "All",
+                  "Bedroom",
+                  "Living Room",
+                  "Dining",
+                  "Tables",
+                  "Seating",
+                ].map((item) => (
+                  <button
+                    className={
+                      filter.toLowerCase() === item.toLowerCase()
+                        ? "active"
+                        : ""
+                    }
+                    onClick={() => {
+                      setFilter(item);
+                      setDrawer(false);
+                    }}
+                    key={item}
+                  >
+                    {item}
+                    <small>
+                      {item === "All"
+                        ? products.length
+                        : products.filter((p) => p.category === item).length}
+                    </small>
+                  </button>
+                ))}
+              </div>
+              {/* {["Price", "Availability", "Material", "Color"].map((item) => (
+                <button className="filter-collapsed" key={item}>
+                  {item}
+                  <span>+</span>
+                </button>
+              ))} */}
+            </aside>
+            {drawer && (
+              <button
+                className="drawer-backdrop"
+                aria-label="Close filters"
+                onClick={() => setDrawer(false)}
+              />
+            )}
+            <div className="product-grid catalog-grid">
+              {shown.map((product) => (
+                <ProductCard key={product.slug} product={product} />
               ))}
             </div>
-            {["Price", "Availability", "Material", "Color"].map((item) => (
-              <button className="filter-collapsed" key={item}>
-                {item}
-                <span>+</span>
-              </button>
-            ))}
-          </aside>
-          {drawer && (
-            <button
-              className="drawer-backdrop"
-              aria-label="Close filters"
-              onClick={() => setDrawer(false)}
-            />
-          )}
-          <div className="product-grid catalog-grid">
-            {shown.map((product) => (
-              <ProductCard key={product.slug} product={product} />
-            ))}
           </div>
-        </div>
-      </section>
-    </main>
-    <Footer />
+        </section>
+      </main>
+      <Footer />
     </>
   );
 }

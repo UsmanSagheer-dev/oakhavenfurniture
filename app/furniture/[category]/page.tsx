@@ -3,14 +3,13 @@
 import { useState, useMemo, use, useEffect } from "react";
 import { products, images } from "../../data/products";
 import ProductCard from "../../components/ProductCard";
-import SectionTitle from "../../components/SectionTitle";
-import NavLink from "../../components/NavLink";
 import Icon from "../../components/Icon";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import SearchOverlay from "../../components/SearchOverlay";
 import CartDrawer from "../../components/CartDrawer";
 import Toast from "../../components/Toast";
+import SortSelect from "../../components/SortSelect";
 import { useCart } from "../../context/CartContext";
 
 export default function CategoryPage({
@@ -35,6 +34,13 @@ export default function CategoryPage({
     window.dispatchEvent(new PopStateEvent("popstate"));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  const sortOptions = [
+    { value: "featured", label: "Featured" },
+    { value: "newest", label: "Newest" },
+    { value: "low", label: "Price: Low to High" },
+    { value: "high", label: "Price: High to Low" },
+  ];
 
   useEffect(() => {
     document.body.style.overflow = search || cartOpen ? "hidden" : "";
@@ -106,17 +112,14 @@ export default function CategoryPage({
           <div className="catalog-toolbar">
             <span>Showing {shown.length} products</span>
             <button className="filter-trigger" onClick={() => setDrawer(true)}>
-              <Icon name="filter" /> Filter
+              Filter
             </button>
-            <label>
-              Sort by{" "}
-              <select value={sort} onChange={(e) => setSort(e.target.value)}>
-                <option value="featured">Featured</option>
-                <option value="newest">Newest</option>
-                <option value="low">Price: Low to High</option>
-                <option value="high">Price: High to Low</option>
-              </select>
-            </label>
+            <SortSelect
+              label="Sort by"
+              value={sort}
+              onChange={setSort}
+              options={sortOptions}
+            />
           </div>
           <div className="catalog-layout">
             <aside className={`filters ${drawer ? "is-open" : ""}`}>
@@ -157,12 +160,12 @@ export default function CategoryPage({
                   </button>
                 ))}
               </div>
-              {["Price", "Availability", "Material", "Color"].map((item) => (
+              {/* {["Price", "Availability", "Material", "Color"].map((item) => (
                 <button className="filter-collapsed" key={item}>
                   {item}
                   <span>+</span>
                 </button>
-              ))}
+              ))} */}
             </aside>
             {drawer && (
               <button
