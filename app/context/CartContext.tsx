@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode, useRef } from "react";
+import { createContext, useContext, useState, ReactNode, useRef, useEffect } from "react";
 import { CartItem } from "../data/products";
 
 type CartContextType = {
@@ -18,7 +18,20 @@ type CartContextType = {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cart, setCart] = useState<CartItem[]>(() => {
+    if (typeof window !== "undefined") {
+      const savedCart = localStorage.getItem("oakhaven-cart");
+      if (savedCart) {
+        try {
+          return JSON.parse(savedCart);
+        } catch (e) {
+          console.error("Failed to parse saved cart:", e);
+          return [];
+        }
+      }
+    }
+    return [];
+  });
   const [toast, setToast] = useState<{ msg: string; visible: boolean }>({
     msg: "",
     visible: false,
@@ -26,6 +39,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const cartCount = cart.reduce((sum, i) => sum + i.quantity, 0);
+
+  // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    localStorage.setItem("oakhaven-cart", JSON.stringify(cart));
+  }, [cart]);
 
   const addToCart = (item: CartItem) => {
     setCart((prev) => {

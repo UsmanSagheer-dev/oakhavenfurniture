@@ -70,7 +70,11 @@ function Header({
             onClick={openCart}
           >
             <Icon name="bag" />
-            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+            {cartCount > 0 && (
+              <span className="cart-badge" suppressHydrationWarning>
+                {cartCount}
+              </span>
+            )}
           </button>
           <button
             className="tool-button menu-button"

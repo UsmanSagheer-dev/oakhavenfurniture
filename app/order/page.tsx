@@ -35,7 +35,6 @@ export default function OrderPage() {
     city: "",
     address: "",
     notes: "",
-    deliveryTime: "",
   });
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
@@ -63,7 +62,7 @@ export default function OrderPage() {
       form.whatsapp ? `WhatsApp: ${form.whatsapp}` : "",
       `City: ${form.city}`,
       `Delivery Address: ${form.address}`,
-      form.deliveryTime ? `Preferred Delivery Time: ${form.deliveryTime}` : "",
+
       form.notes ? `Notes: ${form.notes}` : "",
       "",
       "Order:",
@@ -232,7 +231,7 @@ export default function OrderPage() {
         <section className="content-shell">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_0.9fr] gap-12 items-start">
             <div>
-              <div className="mb-8">
+              <div className="my-8">
                 <span className="eyebrow">Almost there</span>
                 <h1>Complete Your Order</h1>
                 <p>
@@ -241,67 +240,75 @@ export default function OrderPage() {
                 </p>
               </div>
               <form
-                className="flex flex-col gap-6"
+                className="bg-white p-8 rounded-2xl shadow-sm border border-[#efe8de]"
                 onSubmit={handleSubmit}
                 noValidate
               >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <Input
-                    id="ord-name"
-                    label="Full Name"
-                    placeholder="Your full name"
-                    value={form.name}
-                    onChange={(e) => update("name", e.target.value)}
-                    error={fieldErrors.name}
-                    required
-                  />
-                  <Input
-                    id="ord-phone"
-                    type="tel"
-                    label="Phone Number"
-                    placeholder="+44 0000 00000 0"
-                    value={form.phone}
-                    onChange={(e) => update("phone", e.target.value)}
-                    error={fieldErrors.phone}
+                <div className="mb-8">
+                  <h3 className="text-sm font-semibold text-[#647458] uppercase tracking-wider mb-4">
+                    Contact Information
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <Input
+                      id="ord-name"
+                      label="Full Name"
+                      placeholder="Your full name"
+                      value={form.name}
+                      onChange={(e) => update("name", e.target.value)}
+                      error={fieldErrors.name}
+                      required
+                    />
+                    <Input
+                      id="ord-phone"
+                      type="tel"
+                      label="Phone Number"
+                      placeholder="+44 0000 00000 0"
+                      value={form.phone}
+                      onChange={(e) => update("phone", e.target.value)}
+                      error={fieldErrors.phone}
+                      required
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
+                    <Input
+                      id="ord-wa"
+                      type="tel"
+                      label="WhatsApp Number"
+                      placeholder="If different from phone"
+                      value={form.whatsapp}
+                      onChange={(e) => update("whatsapp", e.target.value)}
+                    />
+                    <Input
+                      id="ord-city"
+                      label="City"
+                      placeholder="e.g. London, Manchester"
+                      value={form.city}
+                      onChange={(e) => update("city", e.target.value)}
+                      error={fieldErrors.city}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="mb-8">
+                  <h3 className="text-sm font-semibold text-[#647458] uppercase tracking-wider mb-4">
+                    Delivery Details
+                  </h3>
+                  <Textarea
+                    id="ord-address"
+                    label="Delivery Address"
+                    placeholder="House no., street, area, city"
+                    value={form.address}
+                    onChange={(e) => update("address", e.target.value)}
+                    error={fieldErrors.address}
                     required
                   />
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <Input
-                    id="ord-wa"
-                    type="tel"
-                    label="WhatsApp Number"
-                    placeholder="If different from phone"
-                    value={form.whatsapp}
-                    onChange={(e) => update("whatsapp", e.target.value)}
-                  />
-                  <Input
-                    id="ord-city"
-                    label="City"
-                    placeholder="e.g. London, Manchester"
-                    value={form.city}
-                    onChange={(e) => update("city", e.target.value)}
-                    error={fieldErrors.city}
-                    required
-                  />
-                </div>
-                <Textarea
-                  id="ord-address"
-                  label="Delivery Address"
-                  placeholder="House no., street, area, city"
-                  value={form.address}
-                  onChange={(e) => update("address", e.target.value)}
-                  error={fieldErrors.address}
-                  required
-                />
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <Input
-                    id="ord-time"
-                    label="Preferred Delivery Time"
-                    placeholder="e.g. Weekday mornings"
-                    value={form.deliveryTime}
-                    onChange={(e) => update("deliveryTime", e.target.value)}
-                  />
+
+                <div className="mb-8">
+                  <h3 className="text-sm font-semibold text-[#647458] uppercase tracking-wider mb-4">
+                    Additional Information
+                  </h3>
                   <Input
                     id="ord-notes"
                     label="Additional Notes"
@@ -310,11 +317,12 @@ export default function OrderPage() {
                     onChange={(e) => update("notes", e.target.value)}
                   />
                 </div>
-                <div className="grid gap-2 mt-4">
-                  <button type="submit" className="action action-dark">
+
+                <div className="grid gap-3 pt-4 border-t border-[#efe8de]">
+                  <button type="submit" className="action action-dark w-full justify-center">
                     <Icon name="whatsapp" /> Confirm &amp; Send to WhatsApp
                   </button>
-                  <NavLink href="/cart" className="action action-outline">
+                  <NavLink href="/cart" className="action action-outline w-full justify-center">
                     Back to Cart
                   </NavLink>
                 </div>
