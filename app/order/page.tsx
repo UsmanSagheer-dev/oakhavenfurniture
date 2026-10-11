@@ -16,8 +16,14 @@ import Input from "../components/Input";
 import Textarea from "../components/Textarea";
 import { formatPrice } from "../utils/formatPrice";
 
+const H1 =
+  "m-0 font-(family-name:--serif) text-4xl font-light leading-[1.05] tracking-tight text-(--espresso) md:text-6xl";
+const SECTION_TITLE =
+  "mb-6 font-(family-name:--serif) text-xl font-light text-(--espresso)";
+const RULE = "block h-px w-12 bg-(--gold)";
+
 export default function OrderPage() {
-  const { cart, cartCount, clearCart, toast, hideToast } = useCart();
+  const { cart, cartCount, isLoaded, clearCart, toast, hideToast } = useCart();
   const [search, setSearch] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
@@ -31,8 +37,6 @@ export default function OrderPage() {
   const [form, setForm] = useState({
     name: "",
     phone: "",
-    whatsapp: "",
-    city: "",
     address: "",
     notes: "",
   });
@@ -47,7 +51,6 @@ export default function OrderPage() {
     const errs: Record<string, string> = {};
     if (!form.name.trim()) errs.name = "Please enter your full name.";
     if (!form.phone.trim()) errs.phone = "Please enter your phone number.";
-    if (!form.city.trim()) errs.city = "Please enter your city.";
     if (!form.address.trim())
       errs.address = "Please enter your delivery address.";
     return errs;
@@ -59,8 +62,6 @@ export default function OrderPage() {
       "",
       `Customer: ${form.name}`,
       `Phone: ${form.phone}`,
-      form.whatsapp ? `WhatsApp: ${form.whatsapp}` : "",
-      `City: ${form.city}`,
       `Delivery Address: ${form.address}`,
 
       form.notes ? `Notes: ${form.notes}` : "",
@@ -120,16 +121,18 @@ export default function OrderPage() {
           openSearch={openSearch}
           cartCount={cartCount}
           openCart={() => setCartOpen(true)}
+          isLoaded={isLoaded}
         />
         <SearchOverlay open={search} close={closeSearch} />
-        <main className="page-main">
-          <div className="content-shell px-8 py-24">
-            <h2 className="font-serif text-[2.5rem] font-normal mb-4">
-              Your cart is empty
-            </h2>
-            <p>Add some pieces to your cart before placing an order.</p>
-            <NavLink href="/furniture" className="action action-dark mt-6">
-              Explore Furniture
+        <main className="page-main bg-(--ivory)">
+          <div className="content-shell px-8 py-28">
+            <span aria-hidden="true" className={`${RULE} mb-8`} />
+            <h2 className={H1}>Your cart is empty</h2>
+            <p className="mt-6 max-w-md text-[#74685f]">
+              Add a piece to your cart before placing an order.
+            </p>
+            <NavLink href="/furniture" className="action action-dark mt-10">
+              Explore furniture
             </NavLink>
           </div>
         </main>
@@ -146,35 +149,38 @@ export default function OrderPage() {
           openSearch={openSearch}
           cartCount={cartCount}
           openCart={() => setCartOpen(true)}
+          isLoaded={isLoaded}
         />
         <SearchOverlay open={search} close={closeSearch} />
-        <main className="page-main">
-          <div className="flex flex-col items-center text-center p-24 content-shell">
-            <div className="grid place-items-center w-16 h-16 mb-8 bg-[#22c55e] text-white rounded-full">
-              <Icon name="check" className="w-8 h-8" />
+        <main className="page-main bg-(--ivory)">
+          <div className="content-shell flex flex-col items-center px-8 py-24 text-center md:py-32">
+            <div className="mb-10 grid h-16 w-16 place-items-center rounded-full border border-(--gold) text-(--espresso)">
+              <Icon name="check" className="h-7 w-7" />
             </div>
-            <span className="eyebrow">Thank You</span>
-            <h1>Order Request Sent</h1>
-            <p>
+            <h1 className={H1}>Order request sent</h1>
+            <p className="mx-auto mt-6 max-w-lg text-[#74685f]">
               Thank you for choosing OAK &amp; HAVEN. Your order details have
               been sent to our team. We will contact you shortly to confirm
               availability and delivery.
             </p>
-            <div className="flex flex-col gap-2 my-8 text-left">
-              <div className="flex items-center gap-2 text-[0.75rem]">
-                <Icon name="check" className="w-4 h-4 text-[#22c55e]" />
-                <span>Order request received</span>
-              </div>
-              <div className="flex items-center gap-2 text-[0.75rem]">
-                <Icon name="check" className="w-4 h-4 text-[#22c55e]" />
-                <span>Team will confirm within a few hours</span>
-              </div>
-              <div className="flex items-center gap-2 text-[0.75rem]">
-                <Icon name="check" className="w-4 h-4 text-[#22c55e]" />
-                <span>Delivery details to follow</span>
-              </div>
-            </div>
-            <div className="grid gap-2 my-8">
+
+            <ul className="m-0 my-10 flex list-none flex-col gap-3 border-y border-(--line) p-0 py-8 text-left">
+              {[
+                "Order request received",
+                "Team will confirm within a few hours",
+                "Delivery details to follow",
+              ].map((text) => (
+                <li
+                  key={text}
+                  className="flex items-center gap-3 text-sm tracking-wide text-(--espresso)"
+                >
+                  <Icon name="check" className="h-4 w-4 text-(--gold)" />
+                  <span>{text}</span>
+                </li>
+              ))}
+            </ul>
+
+            <div className="grid gap-3">
               <button
                 className="action action-dark"
                 onClick={() => {
@@ -182,15 +188,18 @@ export default function OrderPage() {
                   navigate("/furniture");
                 }}
               >
-                Continue Shopping
+                Continue shopping
               </button>
               <NavLink href="/" className="action action-outline">
-                Back to Home
+                Back to home
               </NavLink>
             </div>
-            <p className="text-[#a69a8d] text-[0.7rem]">
+            <p className="mt-10 text-sm text-[#a69a8d]">
               Need help?{" "}
-              <a href="https://wa.me/447310613403" className="underline">
+              <a
+                href="https://wa.me/447310613403"
+                className="underline underline-offset-4"
+              >
                 Contact us on WhatsApp
               </a>
             </p>
@@ -208,6 +217,7 @@ export default function OrderPage() {
         openSearch={openSearch}
         cartCount={cartCount}
         openCart={() => setCartOpen(true)}
+        isLoaded={isLoaded}
       />
       <SearchOverlay open={search} close={closeSearch} />
       <CartDrawer
@@ -218,6 +228,7 @@ export default function OrderPage() {
         onRemove={() => {}}
         onViewCart={() => navigate("/cart")}
         onOrder={() => navigate("/order")}
+        isLoaded={isLoaded}
       />
       {toast.visible && (
         <Toast
@@ -227,28 +238,27 @@ export default function OrderPage() {
           visible={toast.visible}
         />
       )}
-      <main className="page-main">
+      <main className="page-main bg-(--ivory)">
         <section className="content-shell">
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_0.9fr] gap-12 items-start">
+          <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-[1fr_0.9fr] lg:gap-20">
             <div>
-              <div className="my-8">
-                <span className="eyebrow">Almost there</span>
-                <h1>Complete Your Order</h1>
-                <p>
+              <div className="my-10 md:my-14">
+                <span aria-hidden="true" className={`${RULE} mb-8`} />
+                <h1 className={H1}>Complete your order</h1>
+                <p className="mt-6 max-w-md text-[#74685f]">
                   Enter your details and send your order directly to OAK &amp;
                   HAVEN. We will confirm availability and delivery promptly.
                 </p>
               </div>
+
               <form
-                className="bg-white p-8 rounded-2xl shadow-sm border border-[#efe8de]"
+                className="border-t border-(--line) pt-10"
                 onSubmit={handleSubmit}
                 noValidate
               >
-                <div className="mb-8">
-                  <h3 className="text-sm font-semibold text-[#647458] uppercase tracking-wider mb-4">
-                    Contact Information
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="mb-12">
+                  <h3 className={SECTION_TITLE}>Contact information</h3>
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                     <Input
                       id="ord-name"
                       label="Full Name"
@@ -269,31 +279,10 @@ export default function OrderPage() {
                       required
                     />
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
-                    <Input
-                      id="ord-wa"
-                      type="tel"
-                      label="WhatsApp Number"
-                      placeholder="If different from phone"
-                      value={form.whatsapp}
-                      onChange={(e) => update("whatsapp", e.target.value)}
-                    />
-                    <Input
-                      id="ord-city"
-                      label="City"
-                      placeholder="e.g. London, Manchester"
-                      value={form.city}
-                      onChange={(e) => update("city", e.target.value)}
-                      error={fieldErrors.city}
-                      required
-                    />
-                  </div>
                 </div>
 
-                <div className="mb-8">
-                  <h3 className="text-sm font-semibold text-[#647458] uppercase tracking-wider mb-4">
-                    Delivery Details
-                  </h3>
+                <div className="mb-12">
+                  <h3 className={SECTION_TITLE}>Delivery details</h3>
                   <Textarea
                     id="ord-address"
                     label="Delivery Address"
@@ -305,10 +294,8 @@ export default function OrderPage() {
                   />
                 </div>
 
-                <div className="mb-8">
-                  <h3 className="text-sm font-semibold text-[#647458] uppercase tracking-wider mb-4">
-                    Additional Information
-                  </h3>
+                <div className="mb-12">
+                  <h3 className={SECTION_TITLE}>Additional information</h3>
                   <Input
                     id="ord-notes"
                     label="Additional Notes"
@@ -318,61 +305,74 @@ export default function OrderPage() {
                   />
                 </div>
 
-                <div className="grid gap-3 pt-4 border-t border-[#efe8de]">
-                  <button type="submit" className="action action-dark w-full justify-center">
-                    <Icon name="whatsapp" /> Confirm &amp; Send to WhatsApp
+                <div className="grid gap-3 border-t border-(--line) pt-8">
+                  <button
+                    type="submit"
+                    className="action action-dark w-full justify-center"
+                  >
+                    <Icon name="whatsapp" /> Confirm &amp; send to WhatsApp
                   </button>
-                  <NavLink href="/cart" className="action action-outline w-full justify-center">
-                    Back to Cart
+                  <NavLink
+                    href="/cart"
+                    className="action action-outline w-full justify-center"
+                  >
+                    Back to cart
                   </NavLink>
                 </div>
               </form>
             </div>
-            <div className="p-6 bg-[#efe8de] sticky top-32 lg:sticky lg:top-32">
-              <h2 className="m-0 mb-4 font-serif text-[1.3rem] font-medium">
-                Order Summary
+
+            {/* Summary: flat panel with a single gold top rule */}
+            <aside
+              aria-label="Order summary"
+              className="border-t border-(--gold) bg-[#efe8de] p-8 lg:sticky lg:top-32"
+            >
+              <h2 className="m-0 mb-6 font-(family-name:--serif) text-2xl font-light text-(--espresso)">
+                Order summary
               </h2>
               {cart.map((item) => (
                 <div
-                  className="grid grid-cols-[4rem_1fr] gap-4 py-3 border-b border-[rgba(33,26,22,0.15)]"
+                  className="grid grid-cols-[8rem_1fr] gap-5 border-b border-(--line) py-5"
                   key={item.id}
                 >
-                  <div className="aspect-square overflow-hidden bg-white rounded-lg">
+                  <div className="aspect-square overflow-hidden bg-(--ivory)">
                     <img
                       src={item.color.image || item.product.variants[0].image}
                       alt={item.product.name}
-                      className="w-full h-full object-cover rounded-lg"
+                      className="h-full w-full object-cover"
                     />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <span className="font-serif text-[0.85rem] font-medium">
+                    <span className="font-(family-name:--serif) text-base font-light text-(--espresso)">
                       {item.product.name}
                     </span>
-                    <span className="text-[0.6rem] text-[#a69a8d]">
+                    <span className="text-xs tracking-wide text-[#74685f]">
                       {item.size.label} · {item.color.name} · Qty{" "}
                       {item.quantity}
                     </span>
-                    <span className="text-[0.75rem] font-semibold">
+                    <span className="text-sm text-(--espresso)">
                       {formatPrice(item.size.price * item.quantity)}
                     </span>
                   </div>
                 </div>
               ))}
-              <div className="flex flex-col gap-2 py-4 mt-2">
+              <div className="mt-2 flex flex-col gap-3 py-5 text-sm tracking-wide text-[#74685f]">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
                   <span>{formatPrice(subtotal)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Delivery</span>
-                  <span className="text-[#647458]">Free</span>
+                  <span className="text-(--espresso)">Free</span>
                 </div>
-                <div className="flex justify-between pt-2 mt-1 font-semibold text-[0.9rem]">
-                  <span>Total</span>
-                  <span>{formatPrice(subtotal)}</span>
+                <div className="mt-2 flex items-baseline justify-between border-t border-(--espresso) pt-4 text-(--espresso)">
+                  <span className="font-(family-name:--serif) text-xl font-light">
+                    Total
+                  </span>
+                  <span className="text-lg">{formatPrice(subtotal)}</span>
                 </div>
               </div>
-            </div>
+            </aside>
           </div>
         </section>
       </main>

@@ -23,7 +23,7 @@ export default function ContactPage() {
     setSent(true);
   };
 
-  const { cart, cartCount, updateQty, removeItem, toast, hideToast } =
+  const { cart, cartCount, isLoaded, updateQty, removeItem, toast, hideToast } =
     useCart();
 
   const navigate = (href: string) => {
@@ -46,6 +46,7 @@ export default function ContactPage() {
         openSearch={openSearch}
         cartCount={cartCount}
         openCart={() => setCartOpen(true)}
+        isLoaded={isLoaded}
       />
       <SearchOverlay open={search} close={closeSearch} />
       <CartDrawer
@@ -56,6 +57,7 @@ export default function ContactPage() {
         onRemove={removeItem}
         onViewCart={() => navigate("/cart")}
         onOrder={() => navigate("/order")}
+        isLoaded={isLoaded}
       />
       {toast.visible && (
         <Toast

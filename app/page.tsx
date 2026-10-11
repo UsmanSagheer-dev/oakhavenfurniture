@@ -20,7 +20,7 @@ export default function HomePage() {
   const [cartOpen, setCartOpen] = useState(false);
   const openSearch = () => setSearch(true);
   const closeSearch = () => setSearch(false);
-  const { cart, cartCount, updateQty, removeItem, toast, hideToast } = useCart();
+  const { cart, cartCount, isLoaded, updateQty, removeItem, toast, hideToast } = useCart();
 
   const navigate = (href: string) => {
     window.history.pushState({}, "", href);
@@ -43,7 +43,7 @@ export default function HomePage() {
 
   return (
     <>
-      <Header path="/" openSearch={openSearch} cartCount={cartCount} openCart={() => setCartOpen(true)} />
+      <Header path="/" openSearch={openSearch} cartCount={cartCount} openCart={() => setCartOpen(true)} isLoaded={isLoaded} />
       <SearchOverlay open={search} close={closeSearch} />
       <CartDrawer
         open={cartOpen}
@@ -53,6 +53,7 @@ export default function HomePage() {
         onRemove={removeItem}
         onViewCart={() => navigate("/cart")}
         onOrder={() => navigate("/order")}
+        isLoaded={isLoaded}
       />
       {toast.visible && <Toast message={toast.msg} onView={() => navigate("/cart")} onClose={hideToast} visible={toast.visible} />}
       <main>

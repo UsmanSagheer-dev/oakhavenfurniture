@@ -18,7 +18,7 @@ import { formatPrice } from "../utils/formatPrice";
 import { products } from "../data/products";
 
 export default function CartPage() {
-  const { cart, cartCount, updateQty, removeItem, toast, hideToast } =
+  const { cart, cartCount, isLoaded, updateQty, removeItem, toast, hideToast } =
     useCart();
   const [search, setSearch] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
@@ -51,6 +51,7 @@ export default function CartPage() {
           openSearch={openSearch}
           cartCount={cartCount}
           openCart={() => setCartOpen(true)}
+          isLoaded={isLoaded}
         />
         <SearchOverlay open={search} close={closeSearch} />
         <CartDrawer
@@ -61,6 +62,7 @@ export default function CartPage() {
           onRemove={removeItem}
           onViewCart={() => navigate("/cart")}
           onOrder={() => navigate("/order")}
+          isLoaded={isLoaded}
         />
         {toast.visible && (
           <Toast
@@ -108,6 +110,7 @@ export default function CartPage() {
         openSearch={openSearch}
         cartCount={cartCount}
         openCart={() => setCartOpen(true)}
+        isLoaded={isLoaded}
       />
       <SearchOverlay open={search} close={closeSearch} />
       <CartDrawer
@@ -118,6 +121,7 @@ export default function CartPage() {
         onRemove={removeItem}
         onViewCart={() => navigate("/cart")}
         onOrder={() => navigate("/order")}
+        isLoaded={isLoaded}
       />
       {toast.visible && (
         <Toast

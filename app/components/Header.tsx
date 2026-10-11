@@ -12,11 +12,13 @@ function Header({
   openSearch,
   cartCount,
   openCart,
+  isLoaded,
 }: {
   path: string;
   openSearch: () => void;
   cartCount: number;
   openCart: () => void;
+  isLoaded: boolean;
 }) {
   const [scrolled, setScrolled] = useState(false);
   const [menu, setMenu] = useState(false);
@@ -70,7 +72,7 @@ function Header({
             onClick={openCart}
           >
             <Icon name="bag" />
-            {cartCount > 0 && (
+            {isLoaded && cartCount > 0 && (
               <span className="cart-badge" suppressHydrationWarning>
                 {cartCount}
               </span>

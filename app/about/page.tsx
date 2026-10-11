@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import NavLink from "../components/NavLink";
 import TrustStrip from "../components/TrustStrip";
 import { images } from "../data/products";
 import Header from "../components/Header";
@@ -17,7 +16,7 @@ export default function AboutPage() {
   const openSearch = () => setSearch(true);
   const closeSearch = () => setSearch(false);
 
-  const { cart, cartCount, updateQty, removeItem, toast, hideToast } = useCart();
+  const { cart, cartCount, isLoaded, updateQty, removeItem, toast, hideToast } = useCart();
 
   const navigate = (href: string) => {
     window.history.pushState({}, "", href);
@@ -32,7 +31,7 @@ export default function AboutPage() {
 
   return (
     <>
-      <Header path="/about" openSearch={openSearch} cartCount={cartCount} openCart={() => setCartOpen(true)} />
+      <Header path="/about" openSearch={openSearch} cartCount={cartCount} openCart={() => setCartOpen(true)} isLoaded={isLoaded} />
       <SearchOverlay open={search} close={closeSearch} />
       <CartDrawer
         open={cartOpen}
@@ -42,6 +41,7 @@ export default function AboutPage() {
         onRemove={removeItem}
         onViewCart={() => navigate("/cart")}
         onOrder={() => navigate("/order")}
+        isLoaded={isLoaded}
       />
       {toast.visible && <Toast message={toast.msg} onView={() => navigate("/cart")} onClose={hideToast} visible={toast.visible} />}
       <main className="page-main">
