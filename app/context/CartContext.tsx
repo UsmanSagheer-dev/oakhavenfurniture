@@ -6,6 +6,7 @@ import { CartItem } from "../data/products";
 type CartContextType = {
   cart: CartItem[];
   cartCount: number;
+  isLoaded: boolean;
   addToCart: (item: CartItem) => void;
   updateQty: (id: string, qty: number) => void;
   removeItem: (id: string) => void;
@@ -18,20 +19,8 @@ type CartContextType = {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [cart, setCart] = useState<CartItem[]>(() => {
-    if (typeof window !== "undefined") {
-      const savedCart = localStorage.getItem("oakhaven-cart");
-      if (savedCart) {
-        try {
-          return JSON.parse(savedCart);
-        } catch (e) {
-          console.error("Failed to parse saved cart:", e);
-          return [];
-        }
-      }
-    }
-    return [];
-  });
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [mounted, setMounted] = useState(false);
   const [toast, setToast] = useState<{ msg: string; visible: boolean }>({
     msg: "",
     visible: false,
@@ -40,11 +29,25 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const cartCount = cart.reduce((sum, i) => sum + i.quantity, 0);
 
+  // Load cart from localStorage after mount
+  useEffect(() => {
+    setMounted(true);
+    if (typeof window === "undefined") return;
+    const savedCart = localStorage.getItem("oakhaven-cart");
+    if (savedCart) {
+      try {
+        setCart(JSON.parse(savedCart));
+      } catch (e) {
+        console.error("Failed to parse saved cart:", e);
+      }
+    }
+  }, []);
+
   // Save cart to localStorage whenever it changes
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (!mounted) return;
     localStorage.setItem("oakhaven-cart", JSON.stringify(cart));
-  }, [cart]);
+  }, [cart, mounted]);
 
   const addToCart = (item: CartItem) => {
     setCart((prev) => {
@@ -90,6 +93,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       value={{
         cart,
         cartCount,
+        isLoaded: mounted,
         addToCart,
         updateQty,
         removeItem,

@@ -16,6 +16,7 @@ function CartDrawer({
   onRemove,
   onViewCart,
   onOrder,
+  isLoaded,
 }: {
   open: boolean;
   onClose: () => void;
@@ -24,6 +25,7 @@ function CartDrawer({
   onRemove: (id: string) => void;
   onViewCart: () => void;
   onOrder: () => void;
+  isLoaded: boolean;
 }) {
   const subtotal = items.reduce(
     (sum, item) => sum + item.size.price * item.quantity,
@@ -40,7 +42,7 @@ function CartDrawer({
         <div className="flex justify-between items-center p-6 border-b border-[rgba(33,26,22,0.15)]">
           <h2 className="m-0 font-serif text-[1.4rem] font-medium">
             Your Cart{" "}
-            {items.length > 0 && (
+            {isLoaded && items.length > 0 && (
               <span className="text-[0.8rem] text-[#a69a8d]">
                 ({items.length})
               </span>

@@ -28,7 +28,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   const openSearch = () => setSearch(true);
   const closeSearch = () => setSearch(false);
 
-  const { cart, cartCount, addToCart, updateQty, removeItem, toast, hideToast } = useCart();
+  const { cart, cartCount, isLoaded, addToCart, updateQty, removeItem, toast, hideToast } = useCart();
 
   const colors: ColorOption[] = productColors[product.slug] || [{ name: "Natural Oak", hex: "#C4A882", image: product.variants[0].image }];
   const [selectedColor, setSelectedColor] = useState<ColorOption | null>(null);
@@ -79,7 +79,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
   return (
     <>
-      <Header path={`/product/${slug}`} openSearch={openSearch} cartCount={cartCount} openCart={() => setCartOpen(true)} />
+      <Header path={`/product/${slug}`} openSearch={openSearch} cartCount={cartCount} openCart={() => setCartOpen(true)} isLoaded={isLoaded} />
       <SearchOverlay open={search} close={closeSearch} />
       <CartDrawer
         open={cartOpen}
@@ -89,6 +89,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
         onRemove={removeItem}
         onViewCart={() => navigate("/cart")}
         onOrder={() => navigate("/order")}
+        isLoaded={isLoaded}
       />
       {toast.visible && <Toast message={toast.msg} onView={() => navigate("/cart")} onClose={hideToast} visible={toast.visible} />}
       <main className="product-page page-main">
